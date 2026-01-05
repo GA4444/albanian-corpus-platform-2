@@ -166,7 +166,7 @@ function App() {
 
     const fetchClasses = async () => {
         try {
-            const classesData = await getClasses()
+            const classesData = await getClasses(userId || undefined)
             setClasses(classesData)
             
             // Load levels for all classes to enable global numbering
@@ -245,7 +245,10 @@ function App() {
 
     const handleClassClick = async (classData: ClassData | null) => {
         if (classData === null) {
-            // Go back to classes view
+            // Go back to classes view - refresh classes to get updated progress
+            if (userId) {
+                fetchClasses()
+            }
             setSelectedClass(null)
             setSelectedCourse(null)
             setSelectedLevel(null)
@@ -390,6 +393,11 @@ function App() {
                 
                 // Update user stats from server to ensure accuracy
                 fetchUserStats()
+                
+                // Refresh classes to update progress and unlocked status
+                if (userId) {
+                    fetchClasses()
+                }
                 
                 setMessage(`Përgjigja e saktë! 🎉 +${pointsEarned} pikë`)
                 
@@ -1527,7 +1535,7 @@ function MainContent({
                     </div>
                     <div className="class-list-modern">
                         {classes.map((classData) => {
-                            const progress = getClassProgress()
+                            const progress = (classData as any).progress_percent || 0
                             const isSelected = selectedClass?.id === classData.id
                             return (
                                 <div

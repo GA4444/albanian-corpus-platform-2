@@ -120,6 +120,7 @@ export interface ClassData {
 	courses: CourseOut[]
 	unlocked: boolean
 	completed: boolean
+	progress_percent?: number
 }
 
 const client = axios.create({ baseURL: '' })
@@ -228,8 +229,9 @@ export async function register(
 	return data
 }
 
-export async function getClasses() {
-	const { data } = await client.get('/api/classes')
+export async function getClasses(userId?: string) {
+	const url = userId ? `/api/classes?user_id=${userId}` : '/api/classes'
+	const { data } = await client.get(url)
 	return data
 }
 

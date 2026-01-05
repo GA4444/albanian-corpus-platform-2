@@ -62,33 +62,6 @@ def seed_first_class_exercises(db: Session):
     db.add(first_class)
     db.flush()  # Get the ID
     
-    # Create the first level
-    level_1 = Level(
-        course_id=first_class.id,
-        name="Niveli 1",
-        description="Ushtrime bazike për fillestarët",
-        order_index=1,
-        required_score=0,
-        enabled=True
-    )
-    db.add(level_1)
-    db.flush()
-    
-    # Create additional levels Niveli 2..12 for Klasa 1
-    extra_levels = []
-    for idx in range(2, 13):
-        extra_levels.append(Level(
-            course_id=first_class.id,
-            name=f"Niveli {idx}",
-            description=f"Niveli {idx} për Klasa 1",
-            order_index=idx,
-            required_score=80 if idx > 1 else 0,
-            enabled=True
-        ))
-    for lvl in extra_levels:
-        db.add(lvl)
-    db.flush()
-    
     # Create 12 courses for Class 1
     courses = []
     
@@ -241,6 +214,21 @@ def seed_first_class_exercises(db: Session):
         db.add(course)
     db.flush()
     
+    # Create a level for each course (like in Class 2 and 3)
+    level_by_course = {}
+    for c in courses:
+        lvl = Level(
+            course_id=c.id,
+            name="Niveli 1",
+            description="Ushtrime bazike për fillestarët",
+            order_index=1,
+            required_score=0,
+            enabled=True,
+        )
+        db.add(lvl)
+        level_by_course[c.id] = lvl
+    db.flush()
+    
     # Create exercises for each course
     exercises = []
     
@@ -257,7 +245,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.LISTEN_WRITE,
                 course_id=course_1.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_1.id].id,
             # Do not include the target word in the prompt; audio will carry the word
             prompt="Shkruaj fjalën që dëgjon.",
             data=json.dumps({"audio_word": prompt, "type": "dictation"}),
@@ -280,7 +268,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.WORD_FROM_DESCRIPTION,
             course_id=course_2.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_2.id].id,
             prompt=prompt,
             data=json.dumps({"choices": choices, "type": "multiple_choice"}),
             answer=answer,
@@ -309,7 +297,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.SYNONYMS_ANTONYMS,
             course_id=course_3.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_3.id].id,
             prompt=prompt,
             data=json.dumps({"choices": choices, "type": exercise_type}),
                 answer=answer,
@@ -336,7 +324,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.ALBANIAN_OR_LOANWORD,
             course_id=course_4.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_4.id].id,
             prompt=f"'{word}' është:",
             data=json.dumps({"choices": choices, "type": "albanian_loanword"}),
             answer=answer,
@@ -361,7 +349,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.MISSING_LETTER,
             course_id=course_5.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_5.id].id,
             prompt=f"Shkruaj fjalën: {word_with_gap}",
             data=json.dumps({"word_with_gap": word_with_gap, "type": "missing_letter"}),
             answer=answer,
@@ -388,7 +376,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.WRONG_LETTER,
             course_id=course_6.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_6.id].id,
             prompt=f"{sentence}\nFjala e saktë: __________",
             data=json.dumps({"sentence": sentence, "type": "wrong_letter"}),
             answer=correct_word,
@@ -415,7 +403,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.BUILD_WORD,
             course_id=course_7.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_7.id].id,
             prompt=f"{scrambled_word} → __________",
             data=json.dumps({"scrambled_word": scrambled_word, "type": "build_word"}),
             answer=correct_word,
@@ -443,7 +431,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.NUMBER_TO_WORD,
             course_id=course_8.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_8.id].id,
             prompt=f"{number} → _____",
             data=json.dumps({"number": number, "type": "number_to_word"}),
                 answer=word,
@@ -464,7 +452,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.PHRASES,
             course_id=course_9.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_9.id].id,
             prompt=f"Përshkrimi: {description}\nFjala:",
             data=json.dumps({"description": description, "type": "phrase"}),
             answer=word,
@@ -486,7 +474,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.SPELLING_PUNCTUATION,
             course_id=course_10.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_10.id].id,
             prompt=f"{incorrect}\nSaktë:",
             data=json.dumps({"incorrect": incorrect, "type": "spelling_punctuation"}),
             answer=correct,
@@ -517,7 +505,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.ABSTRACT_CONCRETE,
             course_id=course_11.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_11.id].id,
             prompt=clean_prompt,
             data=json.dumps({"choices": choices, "type": exercise_type}),
             answer=answer,
@@ -539,7 +527,7 @@ def seed_first_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.BUILD_SENTENCE,
             course_id=course_12.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_12.id].id,
             prompt=f"Fjalë: {words}\nFjalia: ____________________________",
             data=json.dumps({"words": words, "type": "build_sentence"}),
             answer=correct_sentence,
@@ -599,33 +587,6 @@ def seed_second_class_exercises(db: Session):
         enabled=True
     )
     db.add(second_class)
-    db.flush()
-    
-    # Create the first level
-    level_1 = Level(
-        course_id=second_class.id,
-        name="Niveli 1",
-        description="Ushtrime të avancuara për klasën e dytë",
-        order_index=1,
-        required_score=0,
-        enabled=True
-    )
-    db.add(level_1)
-    db.flush()
-    
-    # Create additional levels Niveli 2..12 for Klasa 2
-    extra_levels = []
-    for idx in range(2, 13):
-        extra_levels.append(Level(
-            course_id=second_class.id,
-            name=f"Niveli {idx}",
-            description=f"Niveli {idx} për Klasa 2",
-            order_index=idx,
-            required_score=80 if idx > 1 else 0,
-            enabled=True
-        ))
-    for lvl in extra_levels:
-        db.add(lvl)
     db.flush()
     
     # Create 12 courses for Class 2 (same structure as Class 1)
@@ -780,6 +741,21 @@ def seed_second_class_exercises(db: Session):
         db.add(course)
     db.flush()
     
+    # Create a level for each course (like in Class 3)
+    level_by_course = {}
+    for c in courses:
+        lvl = Level(
+            course_id=c.id,
+            name="Niveli 1",
+            description="Ushtrime të avancuara për klasën e dytë",
+            order_index=1,
+            required_score=0,
+            enabled=True,
+        )
+        db.add(lvl)
+        level_by_course[c.id] = lvl
+    db.flush()
+    
     # Create exercises for each course (ADVANCED versions)
     exercises = []
     
@@ -796,7 +772,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.LISTEN_WRITE,
             course_id=course_1.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_1.id].id,
             prompt="Shkruaj fjalën që dëgjon.",
             data=json.dumps({"audio_word": prompt, "type": "dictation"}),
             answer=answer,
@@ -818,7 +794,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.WORD_FROM_DESCRIPTION,
             course_id=course_2.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_2.id].id,
             prompt=prompt,
             data=json.dumps({"choices": choices, "type": "multiple_choice"}),
             answer=answer,
@@ -847,7 +823,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.SYNONYMS_ANTONYMS,
             course_id=course_3.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_3.id].id,
             prompt=prompt,
             data=json.dumps({"choices": choices, "type": exercise_type}),
             answer=answer,
@@ -874,7 +850,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.ALBANIAN_OR_LOANWORD,
             course_id=course_4.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_4.id].id,
             prompt=f"'{word}' është:",
             data=json.dumps({"choices": choices, "type": "albanian_loanword"}),
             answer=answer,
@@ -899,7 +875,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.MISSING_LETTER,
             course_id=course_5.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_5.id].id,
             prompt=f"Shkruaj fjalën: {word_with_gap}",
             data=json.dumps({"word_with_gap": word_with_gap, "type": "missing_letter"}),
             answer=answer,
@@ -926,7 +902,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.WRONG_LETTER,
             course_id=course_6.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_6.id].id,
             prompt=f"{sentence}\nFjala e saktë: __________",
             data=json.dumps({"sentence": sentence, "type": "wrong_letter"}),
             answer=correct_word,
@@ -953,7 +929,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.BUILD_WORD,
             course_id=course_7.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_7.id].id,
             prompt=f"{scrambled_word} → __________",
             data=json.dumps({"scrambled_word": scrambled_word, "type": "build_word"}),
             answer=correct_word,
@@ -980,7 +956,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.NUMBER_TO_WORD,
             course_id=course_8.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_8.id].id,
             prompt=f"{number} → _____",
             data=json.dumps({"number": number, "type": "number_to_word"}),
             answer=word,
@@ -1002,7 +978,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.PHRASES,
             course_id=course_9.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_9.id].id,
             prompt=f"Përshkrimi: {description}\nFjala:",
             data=json.dumps({"description": description, "type": "phrase"}),
             answer=word,
@@ -1024,7 +1000,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.SPELLING_PUNCTUATION,
             course_id=course_10.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_10.id].id,
             prompt=f"{incorrect}\nSaktë:",
             data=json.dumps({"incorrect": incorrect, "type": "spelling_punctuation"}),
             answer=correct,
@@ -1054,7 +1030,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.ABSTRACT_CONCRETE,
             course_id=course_11.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_11.id].id,
             prompt=clean_prompt,
             data=json.dumps({"choices": choices, "type": exercise_type}),
             answer=answer,
@@ -1076,7 +1052,7 @@ def seed_second_class_exercises(db: Session):
         exercise = Exercise(
             category=CategoryEnum.BUILD_SENTENCE,
             course_id=course_12.id,
-            level_id=level_1.id,
+            level_id=level_by_course[course_12.id].id,
             prompt=f"Fjalë: {words}\nFjalia: ____________________________",
             data=json.dumps({"words": words, "type": "build_sentence"}),
             answer=correct_sentence,
