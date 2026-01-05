@@ -1,0 +1,116 @@
+{"id": 1, "name": "Klasa 1", "description": "Klasa e 1-të për moshën 6-7 vjeç", "order_index": 1, "category": "vocabulary", "required_score": 0, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 21, "name": "Klasa 2", "description": "Klasa e dytë për moshën 7-8 vjeç me 12 kategorive të ushtrimeve të avancuara", "order_index": 2, "category": "vocabulary", "required_score": 80, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 60, "name": "Klasa 3", "description": "Klasa e tretë (8-9 vjeç) me 12 kategori ushtrimesh më të avancuara", "order_index": 3, "category": "vocabulary", "required_score": 80, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 47, "name": "Klasa 4", "description": "Klasa e katërt (9-10 vjeç) me 12 kategori ushtrimesh edhe më të avancuara", "order_index": 4, "category": "vocabulary", "required_score": 80, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 73, "name": "Klasa 5", "description": "Klasa e pestë (10-11 vjeç) me 12 kategori ushtrimesh shumë të avancuara", "order_index": 5, "category": "vocabulary", "required_score": 80, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 86, "name": "Klasa 6", "description": "Klasa e gjashtë (11-12 vjeç) me 12 kategori ushtrimesh ekstremisht të avancuara", "order_index": 6, "category": "vocabulary", "required_score": 80, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 99, "name": "Klasa 7", "description": "Klasa e shtatë (12-13 vjeç) me 12 kategori ushtrimesh shumë të avancuara dhe komplekse", "order_index": 7, "category": "vocabulary", "required_score": 80, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 112, "name": "Klasa 8", "description": "Klasa e tetë (13-14 vjeç) me 12 kategori ushtrimesh më të avancuara dhe më komplekse", "order_index": 8, "category": "vocabulary", "required_score": 80, "enabled": true, "parent_class_id": null, "is_class": true}
+{"id": 9, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 10, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 11, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 12, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 13, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 14, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 15, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 16, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 17, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 18, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 19, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 20, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 1, "is_class": false}
+{"id": 22, "name": "Niveli 1", "description": "Dëgjo dhe shkruaj fjalët e avancuara", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 23, "name": "Niveli 2", "description": "Zgjedh fjalën e duhur nga lista bazuar në përshkrimin e avancuar", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 24, "name": "Niveli 3", "description": "Mëso sinonimet dhe antonimet e fjalëve të avancuara", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 25, "name": "Niveli 4", "description": "Identifiko nëse fjala është shqipe apo huazim (avancuar)", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 26, "name": "Niveli 5", "description": "Plotëso shkronjën që mungon në fjalë të avancuara", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 27, "name": "Niveli 6", "description": "Gjej dhe ndreq shkronjën e gabuar në fjali të avancuara", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 28, "name": "Niveli 7", "description": "Ndërto fjalën e avancuar nga shkronja të përziera", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 29, "name": "Niveli 8", "description": "Shkruaj numrin si fjalë (11-20)", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 30, "name": "Niveli 9", "description": "Kuptimi i shprehjeve frazeologjike të avancuara", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 31, "name": "Niveli 10", "description": "Gjej gabimin dhe rishkruaj saktë (avancuar)", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 32, "name": "Niveli 11", "description": "Zgjedh fjalën sipas kuptimit abstrakt ose konkret (avancuar)", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 33, "name": "Niveli 12", "description": "Ndërto fjali të avancuara nga fjalët e dhëna", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 21, "is_class": false}
+{"id": 35, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 36, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 37, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 38, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 39, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 40, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 41, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 42, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 43, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 44, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 45, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 46, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 34, "is_class": false}
+{"id": 48, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 49, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 50, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 51, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 52, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 53, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 54, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 55, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 56, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 57, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 58, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 59, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 47, "is_class": false}
+{"id": 61, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 62, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 63, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 64, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 65, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 66, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 67, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 68, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 69, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 70, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 71, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 72, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 60, "is_class": false}
+{"id": 74, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 75, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 76, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 77, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 78, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 79, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 80, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 81, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 82, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 83, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 84, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 85, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 73, "is_class": false}
+{"id": 87, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 88, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 89, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 90, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 91, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 92, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 93, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 94, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 95, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 96, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 97, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 98, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 86, "is_class": false}
+{"id": 100, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 101, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 102, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 103, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 104, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 105, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 106, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 107, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 108, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 109, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 110, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 111, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 99, "is_class": false}
+{"id": 113, "name": "Niveli 1", "description": "Niveli 1", "order_index": 1, "category": "listen_write", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 114, "name": "Niveli 2", "description": "Niveli 2", "order_index": 2, "category": "word_from_description", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 115, "name": "Niveli 3", "description": "Niveli 3", "order_index": 3, "category": "synonyms_antonyms", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 116, "name": "Niveli 4", "description": "Niveli 4", "order_index": 4, "category": "albanian_or_loanword", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 117, "name": "Niveli 5", "description": "Niveli 5", "order_index": 5, "category": "missing_letter", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 118, "name": "Niveli 6", "description": "Niveli 6", "order_index": 6, "category": "wrong_letter", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 119, "name": "Niveli 7", "description": "Niveli 7", "order_index": 7, "category": "build_word", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 120, "name": "Niveli 8", "description": "Niveli 8", "order_index": 8, "category": "number_to_word", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 121, "name": "Niveli 9", "description": "Niveli 9", "order_index": 9, "category": "phrases", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 122, "name": "Niveli 10", "description": "Niveli 10", "order_index": 10, "category": "spelling_punctuation", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 123, "name": "Niveli 11", "description": "Niveli 11", "order_index": 11, "category": "abstract_concrete", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}
+{"id": 124, "name": "Niveli 12", "description": "Niveli 12", "order_index": 12, "category": "build_sentence", "required_score": 0, "enabled": true, "parent_class_id": 112, "is_class": false}

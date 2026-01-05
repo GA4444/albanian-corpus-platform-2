@@ -1,0 +1,113 @@
+{"id": 145, "course_id": 2, "name": "Niveli 1", "description": "Niveli 1 për Klasa 2", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 146, "course_id": 2, "name": "Niveli 2", "description": "Niveli 2 për Klasa 2", "order_index": 2, "required_score": 80, "enabled": true}
+{"id": 147, "course_id": 2, "name": "Niveli 3", "description": "Niveli 3 për Klasa 2", "order_index": 3, "required_score": 80, "enabled": true}
+{"id": 148, "course_id": 2, "name": "Niveli 4", "description": "Niveli 4 për Klasa 2", "order_index": 4, "required_score": 80, "enabled": true}
+{"id": 149, "course_id": 2, "name": "Niveli 5", "description": "Niveli 5 për Klasa 2", "order_index": 5, "required_score": 80, "enabled": true}
+{"id": 192, "course_id": 9, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 193, "course_id": 10, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 194, "course_id": 11, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 195, "course_id": 12, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 196, "course_id": 13, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 197, "course_id": 14, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 198, "course_id": 15, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 199, "course_id": 16, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 200, "course_id": 17, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 201, "course_id": 18, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 202, "course_id": 19, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 203, "course_id": 20, "name": "Niveli 1", "description": "Ushtrime bazike", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 384, "course_id": 22, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 385, "course_id": 23, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 386, "course_id": 24, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 387, "course_id": 25, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 388, "course_id": 26, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 389, "course_id": 27, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 390, "course_id": 28, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 391, "course_id": 29, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 392, "course_id": 30, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 393, "course_id": 31, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 394, "course_id": 32, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 395, "course_id": 33, "name": "Niveli 1", "description": "Ushtrime të avancuara për klasën e dytë", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 228, "course_id": 35, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 229, "course_id": 36, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 230, "course_id": 37, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 231, "course_id": 38, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 232, "course_id": 39, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 233, "course_id": 40, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 234, "course_id": 41, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 235, "course_id": 42, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 236, "course_id": 43, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 237, "course_id": 44, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 238, "course_id": 45, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 239, "course_id": 46, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 252, "course_id": 48, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 253, "course_id": 49, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 254, "course_id": 50, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 255, "course_id": 51, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 256, "course_id": 52, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 257, "course_id": 53, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 258, "course_id": 54, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 259, "course_id": 55, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 260, "course_id": 56, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 261, "course_id": 57, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 262, "course_id": 58, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 263, "course_id": 59, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 276, "course_id": 61, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 277, "course_id": 62, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 278, "course_id": 63, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 279, "course_id": 64, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 280, "course_id": 65, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 281, "course_id": 66, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 282, "course_id": 67, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 283, "course_id": 68, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 284, "course_id": 69, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 285, "course_id": 70, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 286, "course_id": 71, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 287, "course_id": 72, "name": "Niveli 1", "description": "Ushtrime të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 300, "course_id": 74, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 301, "course_id": 75, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 302, "course_id": 76, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 303, "course_id": 77, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 304, "course_id": 78, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 305, "course_id": 79, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 306, "course_id": 80, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 307, "course_id": 81, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 308, "course_id": 82, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 309, "course_id": 83, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 310, "course_id": 84, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 311, "course_id": 85, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 324, "course_id": 87, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 325, "course_id": 88, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 326, "course_id": 89, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 327, "course_id": 90, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 328, "course_id": 91, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 329, "course_id": 92, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 330, "course_id": 93, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 331, "course_id": 94, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 332, "course_id": 95, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 333, "course_id": 96, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 334, "course_id": 97, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 335, "course_id": 98, "name": "Niveli 1", "description": "Ushtrime ekstremisht të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 348, "course_id": 100, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 349, "course_id": 101, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 350, "course_id": 102, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 351, "course_id": 103, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 352, "course_id": 104, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 353, "course_id": 105, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 354, "course_id": 106, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 355, "course_id": 107, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 356, "course_id": 108, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 357, "course_id": 109, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 358, "course_id": 110, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 359, "course_id": 111, "name": "Niveli 1", "description": "Ushtrime shumë të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 372, "course_id": 113, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 373, "course_id": 114, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 374, "course_id": 115, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 375, "course_id": 116, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 376, "course_id": 117, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 377, "course_id": 118, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 378, "course_id": 119, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 379, "course_id": 120, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 380, "course_id": 121, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 381, "course_id": 122, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 382, "course_id": 123, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}
+{"id": 383, "course_id": 124, "name": "Niveli 1", "description": "Ushtrime më të avancuara", "order_index": 1, "required_score": 0, "enabled": true}

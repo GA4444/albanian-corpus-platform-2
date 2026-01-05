@@ -1,8 +1,14 @@
+// Updated: 2026-01-05 18:21 - Fixed cls.courses iteration bug
 import { useState, useEffect } from 'react'
-import type { CourseOut, LevelOut, ExerciseOut, ProgressOut, ClassData } from './api'
-import { getClasses, getClassCourses, getCourseLevels, getLevelExercises, submitAnswer, fetchUserOverview, login, register, getAIRecommendations, getAdaptiveDifficulty, getLearningPath, getProgressInsights, getLeaderboard, getUserRank, getPublicStats, type LeaderboardEntry } from './api'
+import type { ChangeEvent } from 'react'
+import type { CourseOut, LevelOut, ExerciseOut, ProgressOut, ClassData, AIPracticeExercise, AICoachResponse, UserAchievementsResponse, StreakData, DailyChallenge, SRSStatsResponse } from './api'
+import { getClasses, getClassCourses, getCourseLevels, getLevelExercises, submitAnswer, fetchUserOverview, login, register, getAIRecommendations, getAdaptiveDifficulty, getLearningPath, getProgressInsights, getLeaderboard, getUserRank, getPublicStats, fetchAIPersonalizedPractice, fetchAICoach, analyzeOCR, getUserAchievements, getUserStreak, getDailyChallenge, getSRSStats, askChatbot, getChatSuggestions, type LeaderboardEntry } from './api'
 import AdminDashboard from './AdminDashboard'
 import './App.css'
+
+const normalizeText = (value: string) => {
+    return value.normalize('NFKC').toLowerCase().trim().replace(/\s+/g, ' ')
+}
 
 function App() {
     // Authentication state - clear invalid values
@@ -106,8 +112,28 @@ function App() {
     const [adaptiveDifficulty, setAdaptiveDifficulty] = useState<any>(null)
     const [learningPath, setLearningPath] = useState<any>(null)
     const [progressInsights, setProgressInsights] = useState<any>(null)
+    const [aiCoach, setAiCoach] = useState<AICoachResponse | null>(null)
+    const [aiCoachLoading, setAiCoachLoading] = useState(false)
+    const [aiCoachError, setAiCoachError] = useState<string | null>(null)
+    const [aiCoachLevel, setAiCoachLevel] = useState<AICoachResponse | null>(null)
+    const [aiCoachLevelLoading, setAiCoachLevelLoading] = useState(false)
+    const [aiCoachLevelError, setAiCoachLevelError] = useState<string | null>(null)
     const [showAIInsights, setShowAIInsights] = useState(false)
     const [showProfile, setShowProfile] = useState(false)
+
+    // Gamification state
+    const [userAchievements, setUserAchievements] = useState<UserAchievementsResponse | null>(null)
+    const [userStreak, setUserStreak] = useState<StreakData | null>(null)
+    const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(null)
+    const [srsStats, setSrsStats] = useState<SRSStatsResponse | null>(null)
+    const [showGamification, setShowGamification] = useState(false)
+
+    // Chatbot state
+    const [showChatbot, setShowChatbot] = useState(false)
+    const [chatMessages, setChatMessages] = useState<Array<{role: 'user' | 'assistant', content: string, suggestions?: string[], timestamp: string}>>([])
+    const [chatInput, setChatInput] = useState('')
+    const [chatLoading, setChatLoading] = useState(false)
+    const [chatSuggestions, setChatSuggestions] = useState<string[]>([])
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
     const [userRank, setUserRank] = useState<any>(null)
@@ -134,6 +160,22 @@ function App() {
     const [courseLevels, setCourseLevels] = useState<LevelOut[]>([])
     const [classCourses, setClassCourses] = useState<CourseOut[]>([])
 
+    // AI practice state
+    const [aiExercises, setAiExercises] = useState<AIPracticeExercise[]>([])
+    const [aiResponses, setAiResponses] = useState<Record<string, string>>({})
+    const [aiFeedback, setAiFeedback] = useState<Record<string, string>>({})
+    const [aiMessage, setAiMessage] = useState<string | null>(null)
+    const [aiError, setAiError] = useState<string | null>(null)
+    const [aiLoading, setAiLoading] = useState<boolean>(false)
+
+    const [ocrFile, setOcrFile] = useState<File | null>(null)
+    const [ocrExpected, setOcrExpected] = useState<string>('')
+    const [ocrResult, setOcrResult] = useState<any>(null)
+    const [ocrLoading, setOcrLoading] = useState<boolean>(false)
+    const [ocrError, setOcrError] = useState<string | null>(null)
+
+
+
 
 
 
@@ -145,58 +187,184 @@ function App() {
         }
     }, [userId])
 
-    // Fetch AI data when user is logged in
+    // Fetch AI data when user is logged in (optimized with prioritization)
     useEffect(() => {
         if (userId) {
-            Promise.all([
-                getAIRecommendations(userId),
-                getAdaptiveDifficulty(userId),
-                getLearningPath(userId),
-                getProgressInsights(userId)
-            ]).then(([recs, diff, path, insights]) => {
-                setAiRecommendations(recs)
-                setAdaptiveDifficulty(diff)
-                setLearningPath(path)
-                setProgressInsights(insights)
-            }).catch(console.error)
+            // Priority 1: Essential AI features loaded immediately
+            const essentialPromises = [
+                getAIRecommendations(userId).catch(e => { console.error('AI Recs error:', e); return null; }),
+                getUserStreak(userId).catch(e => { console.error('Streak error:', e); return null; })
+            ]
+            
+            Promise.all(essentialPromises).then(([recs, streak]) => {
+                if (recs) setAiRecommendations(recs)
+                if (streak) setUserStreak(streak)
+            })
+
+            // Priority 2: Secondary features loaded with slight delay (debounced)
+            const secondaryTimer = setTimeout(() => {
+                Promise.all([
+                    getAdaptiveDifficulty(userId).catch(e => { console.error('Difficulty error:', e); return null; }),
+                    getLearningPath(userId).catch(e => { console.error('Path error:', e); return null; }),
+                    getProgressInsights(userId).catch(e => { console.error('Insights error:', e); return null; }),
+                    getUserAchievements(userId).catch(e => { console.error('Achievements error:', e); return null; }),
+                    getDailyChallenge(userId).catch(e => { console.error('Challenge error:', e); return null; }),
+                ]).then(([diff, path, insights, achievements, challenge]) => {
+                    if (diff) setAdaptiveDifficulty(diff)
+                    if (path) setLearningPath(path)
+                    if (insights) setProgressInsights(insights)
+                    if (achievements) setUserAchievements(achievements)
+                    if (challenge) setDailyChallenge(challenge)
+                })
+            }, 500) // 500ms delay
+
+            // Priority 3: AI Coach and SRS loaded last (heavier operations)
+            const tertiaryTimer = setTimeout(() => {
+                // AI Coach (overall)
+                setAiCoachLoading(true)
+                setAiCoachError(null)
+                fetchAICoach({ user_id: userId }).then((data) => {
+                    setAiCoach(data)
+                }).catch((e) => {
+                    console.error('AI Coach error:', e)
+                    setAiCoachError('AI Coach nuk është i disponueshëm tani.')
+                }).finally(() => setAiCoachLoading(false))
+
+                // SRS Stats
+                getSRSStats(userId).then(setSrsStats).catch(e => console.error('SRS error:', e))
+            }, 1000) // 1s delay
+
+            // Cleanup timers on unmount
+            return () => {
+                clearTimeout(secondaryTimer)
+                clearTimeout(tertiaryTimer)
+            }
         }
     }, [userId])
 
+    // AI Coach (current level) – refresh when level changes
+    useEffect(() => {
+        if (!userId) return
+        if (!selectedLevel) {
+            setAiCoachLevel(null)
+            setAiCoachLevelError(null)
+            setAiCoachLevelLoading(false)
+            return
+        }
 
+        setAiCoachLevelLoading(true)
+        setAiCoachLevelError(null)
+        fetchAICoach({ user_id: userId, level_id: selectedLevel.id }).then((data) => {
+            setAiCoachLevel(data)
+        }).catch((e) => {
+            console.error('AI Coach (level) error:', e)
+            setAiCoachLevelError('AI Coach për këtë nivel nuk është i disponueshëm tani.')
+        }).finally(() => setAiCoachLevelLoading(false))
+    }, [userId, selectedLevel?.id])
 
-    const fetchClasses = async () => {
+    // Load chatbot suggestions when chatbot opens
+    useEffect(() => {
+        if (showChatbot && chatSuggestions.length === 0) {
+            getChatSuggestions().then((data) => {
+                setChatSuggestions(data.suggestions)
+            }).catch(console.error)
+        }
+    }, [showChatbot, chatSuggestions.length])
+
+    // Handle chatbot message
+    const handleChatbotSend = async (messageText?: string) => {
+        const text = messageText || chatInput.trim()
+        if (!text) return
+
+        // Add user message
+        const userMessage = {
+            role: 'user' as const,
+            content: text,
+            timestamp: new Date().toISOString()
+        }
+        setChatMessages(prev => [...prev, userMessage])
+        setChatInput('')
+        setChatLoading(true)
+
         try {
+            const response = await askChatbot({
+                message: text,
+                user_id: userId || undefined
+            })
+
+            // Add assistant message
+            const assistantMessage = {
+                role: 'assistant' as const,
+                content: response.response,
+                suggestions: response.suggestions,
+                timestamp: response.timestamp
+            }
+            setChatMessages(prev => [...prev, assistantMessage])
+        } catch (error) {
+            console.error('Chatbot error:', error)
+            const errorMessage = {
+                role: 'assistant' as const,
+                content: 'Më fal, ndodhi një gabim. Provo përsëri.',
+                timestamp: new Date().toISOString()
+            }
+            setChatMessages(prev => [...prev, errorMessage])
+        } finally {
+            setChatLoading(false)
+        }
+    }
+
+    // Simple cache to avoid re-fetching classes unnecessarily
+    const [classesCache, setClassesCache] = useState<{ data: ClassData[], timestamp: number } | null>(null)
+    const CACHE_DURATION = 30000 // 30 seconds
+
+    const fetchClasses = async (forceRefresh = false) => {
+        // Return cached data if available and not expired
+        if (!forceRefresh && classesCache && (Date.now() - classesCache.timestamp < CACHE_DURATION)) {
+            console.log('[Cache] Using cached classes data')
+            setClasses(classesCache.data)
+            setIsLoading(false)
+            return
+        }
+
+        try {
+            console.log('[Fetch] Fetching classes from API')
             const classesData = await getClasses(userId || undefined)
             setClasses(classesData)
             
-            // Load levels for all classes to enable global numbering
-            // This is done in the background to not block the UI
-            Promise.all(
-                classesData.map(async (classData: ClassData) => {
-                    try {
-                        const courses = await getClassCourses(classData.id, userId || '1')
-                        const coursesWithLevels = await Promise.all(
-                            courses.map(async (course: CourseOut) => {
-                                try {
-                                    const levels = await getCourseLevels(course.id)
-                                    return { ...course, levels }
-                                } catch (error) {
-                                    console.error(`Error fetching levels for course ${course.id}:`, error)
-                                    return { ...course, levels: [] }
-                                }
-                            })
-                        )
-                        return { ...classData, courses: coursesWithLevels }
-                    } catch (error) {
-                        console.error(`Error loading levels for class ${classData.id}:`, error)
-                        return classData
-                    }
+            // Update cache immediately with basic class data
+            setClassesCache({ data: classesData, timestamp: Date.now() })
+            
+            // Load levels for all classes in background (lazy)
+            // This is done with lower priority to not block the UI
+            setTimeout(() => {
+                Promise.all(
+                    classesData.map(async (classData: ClassData) => {
+                        try {
+                            const courses = await getClassCourses(classData.id, userId || '1')
+                            const coursesWithLevels = await Promise.all(
+                                courses.map(async (course: CourseOut) => {
+                                    try {
+                                        const levels = await getCourseLevels(course.id)
+                                        return { ...course, levels }
+                                    } catch (error) {
+                                        console.error(`Error fetching levels for course ${course.id}:`, error)
+                                        return { ...course, levels: [] }
+                                    }
+                                })
+                            )
+                            return { ...classData, courses: coursesWithLevels }
+                        } catch (error) {
+                            console.error(`Error loading levels for class ${classData.id}:`, error)
+                            return classData
+                        }
+                    })
+                ).then(classesWithLevels => {
+                    setClasses(classesWithLevels)
+                    setClassesCache({ data: classesWithLevels, timestamp: Date.now() })
+                }).catch(error => {
+                    console.error('Error loading levels for classes:', error)
                 })
-            ).then(classesWithLevels => {
-                setClasses(classesWithLevels)
-            }).catch(error => {
-                console.error('Error loading levels for classes:', error)
-            })
+            }, 100) // Small delay to prioritize main UI
             
             setIsLoading(false)
         } catch (error) {
@@ -365,6 +533,28 @@ function App() {
         }
     }
 
+    // Preload audio for current exercise to reduce latency
+    useEffect(() => {
+        if (exercises.length > 0 && currentExerciseIndex < exercises.length) {
+            const currentExercise = exercises[currentExerciseIndex]
+            // Preload audio for listen_write exercises (dictation)
+            if (currentExercise && currentExercise.category === 'listen_write') {
+                // Preload audio in background
+                const audioUrl = `/api/audio-exercises/${currentExercise.id}?slow=true&voice=anila`
+                const preloadAudio = new Audio(audioUrl)
+                preloadAudio.preload = 'auto'
+                preloadAudio.load()
+                console.log(`[Audio] Preloading audio for exercise ${currentExercise.id}`)
+                
+                // Cleanup
+                return () => {
+                    preloadAudio.pause()
+                    preloadAudio.src = ''
+                }
+            }
+        }
+    }, [exercises, currentExerciseIndex])
+
     const handleSubmitAnswer = async () => {
         if (!selectedLevel || !exercises[currentExerciseIndex]) return
 
@@ -374,8 +564,23 @@ function App() {
             return
         }
 
+        // Ruaj vlerat aktuale para async operacionit
+        const currentIndex = currentExerciseIndex
+        const currentExercises = exercises
+        const currentSelectedClass = selectedClass
+
         try {
-            const result = await submitAnswer(exercises[currentExerciseIndex].id, { user_id: userId!, response: answer })
+            // Trim the answer to remove any leading/trailing whitespace
+            const trimmedAnswer = answer.trim()
+            console.log('[DEBUG] Submitting answer:', {
+                exerciseId: exercises[currentIndex].id,
+                userId: userId,
+                response: trimmedAnswer
+            })
+            
+            const result = await submitAnswer(exercises[currentIndex].id, { user_id: userId!, response: trimmedAnswer })
+            
+            console.log('[DEBUG] Submit result:', result)
             
             // Advanced gamification feedback
             if (result.is_correct) {
@@ -383,6 +588,11 @@ function App() {
                 const newTotalPoints = userStats.totalPoints + pointsEarned
                 const newLevel = Math.floor(newTotalPoints / 100) + 1
                 const newExperience = newTotalPoints % 100
+                
+                console.log('[DEBUG] Correct answer! Points earned:', pointsEarned)
+                console.log('[DEBUG] Course completed:', result.course_completed)
+                console.log('[DEBUG] Current exercises length:', currentExercises.length)
+                console.log('[DEBUG] Current index:', currentIndex)
                 
                 setUserStats(prev => ({
                     ...prev,
@@ -394,16 +604,23 @@ function App() {
                 // Update user stats from server to ensure accuracy
                 fetchUserStats()
                 
-                // Refresh classes to update progress and unlocked status
-                if (userId) {
-                    fetchClasses()
-                }
-                
                 setMessage(`Përgjigja e saktë! 🎉 +${pointsEarned} pikë`)
+                
+                console.log('[DEBUG] Before setTimeout - exercises length:', exercises.length)
+                console.log('[DEBUG] Before setTimeout - currentExerciseIndex:', currentExerciseIndex)
+                console.log('[DEBUG] Before setTimeout - selectedLevel:', selectedLevel?.id)
                 
                 // Move to next exercise after a short delay
                 setTimeout(() => {
+                    console.log('[DEBUG] Timeout executed')
+                    console.log('[DEBUG] currentIndex:', currentIndex)
+                    console.log('[DEBUG] currentExercises.length:', currentExercises.length)
+                    console.log('[DEBUG] result.course_completed:', result.course_completed)
+                    console.log('[DEBUG] result.level_completed:', result.level_completed)
+                    
+                    // Përdor vlerat e ruajtura, jo state variables që mund të kenë ndryshuar
                     if (result.course_completed) {
+                        console.log('[DEBUG] Course completed - going back to course selection')
                         // Course completed with >=80% accuracy → go back to course selection section
                         setMessage('🎉 Kurs i përfunduar! Zgjidhni kursin që dëshironi! 🚀')
                         setSelectedLevel(null)
@@ -411,34 +628,130 @@ function App() {
                         setExercises([])
                         setCurrentExerciseIndex(0)
                         // Go back to course selection section (div class course section)
-                        if (selectedClass?.id && userId) {
-                            getClassCourses(selectedClass.id, userId).then(setClassCourses).catch(() => {})
+                        if (currentSelectedClass?.id && userId) {
+                            getClassCourses(currentSelectedClass.id, userId).then(setClassCourses).catch(() => {})
+                        }
+                        // Refresh classes after course is completed
+                        if (userId) {
+                            fetchClasses()
                         }
                         return
                     }
 
-                    if (currentExerciseIndex < exercises.length - 1) {
-                        const nextIndex = currentExerciseIndex + 1
+                    // Kontrollo nëse ka më shumë ushtrime duke përdorur vlerat e ruajtura
+                    if (currentIndex < currentExercises.length - 1) {
+                        console.log('[DEBUG] Moving to next exercise:', currentIndex, '->', currentIndex + 1)
+                        const nextIndex = currentIndex + 1
                         setCurrentExerciseIndex(nextIndex)
                         // Clear the answer field for the next exercise
-                        setAnswers(prev => ({ ...prev, [exercises[nextIndex].id]: '' }))
+                        setAnswers(prev => ({ ...prev, [currentExercises[nextIndex].id]: '' }))
                         setMessage('Ushtrim i ri! Vazhdoni mësimin! 📚')
                     } else {
+                        console.log('[DEBUG] All exercises completed in this level')
                         // Finished all exercises in current level - go back to course preview grid
                         setMessage('Urime! Ju keni përfunduar të gjitha ushtrimet! Kthehu tek kurset për të vazhduar! 🏆🎉')
                         setSelectedLevel(null)
                         setSelectedCourse(null)
                         setExercises([])
                         setCurrentExerciseIndex(0)
-                        // Go back to course preview grid
+                        // Refresh classes after level is completed
+                        if (userId) {
+                            fetchClasses()
+                        }
                     }
                 }, 1500) // Wait 1.5 seconds before moving to next question
             } else {
+                console.log('[DEBUG] Incorrect answer')
                 setMessage(`Përgjigja e pasaktë. Provo përsëri! 💪`)
             }
         } catch (error) {
-            console.error('Error submitting answer:', error)
+            console.error('[ERROR] Error submitting answer:', error)
             setMessage('Gabim në dërgimin e përgjigjes. Provo përsëri! ❌')
+        }
+    }
+
+    const handleGenerateAIPractice = async () => {
+        if (!selectedLevel || !selectedClass || !userId) {
+            setAiError('Zgjidhni një nivel dhe identifikohuni për të marrë ushtrime AI.')
+            return
+        }
+
+        setAiLoading(true)
+        setAiError(null)
+        setAiMessage(null)
+
+        try {
+            const result = await fetchAIPersonalizedPractice({
+                user_id: userId,
+                class_id: selectedClass.id,
+                level_id: selectedLevel.id
+            })
+
+            setAiExercises(result.exercises)
+            setAiMessage(result.message)
+            setAiResponses({})
+            setAiFeedback({})
+        } catch (error) {
+            console.error('Error generating AI practice:', error)
+            setAiError('Nuk arritëm të gjenerojmë ushtrime AI tani. Provo përsëri pak më vonë.')
+        } finally {
+            setAiLoading(false)
+        }
+    }
+
+    const handleAIResponseChange = (exerciseId: string, value: string) => {
+        setAiResponses(prev => ({ ...prev, [exerciseId]: value }))
+        setAiFeedback(prev => ({ ...prev, [exerciseId]: '' }))
+    }
+
+    const handleAIExerciseCheck = (exercise: AIPracticeExercise) => {
+        const answer = aiResponses[exercise.id] || ''
+        if (!answer.trim()) {
+            setAiFeedback(prev => ({ ...prev, [exercise.id]: 'Shkruaj një përgjigje për ta kontrolluar.' }))
+            return
+        }
+
+        const isCorrect = normalizeText(answer) === normalizeText(exercise.answer)
+        setAiFeedback(prev => ({
+            ...prev,
+            [exercise.id]: isCorrect
+                ? '🎉 Saktë! Vazhdoni me ushtrimin tjetër.'
+                : '❌ Nuk është saktë. Kontrollo drejtshkrimin dhe provo një herë tjetër.'
+        }))
+    }
+
+    const handleSelectOCRFile = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (file) {
+            setOcrFile(file)
+            setOcrError(null)
+        }
+    }
+
+    const handleOCRSubmit = async () => {
+        if (!ocrFile) {
+            setOcrError('Ngarko një imazh me diktim për ta analizuar.')
+            return
+        }
+
+        setOcrLoading(true)
+        setOcrError(null)
+        setOcrResult(null)
+
+        try {
+            const formData = new FormData()
+            formData.append('image', ocrFile)
+            if (ocrExpected.trim()) {
+                formData.append('expected_text', ocrExpected.trim())
+            }
+
+            const result = await analyzeOCR(formData)
+            setOcrResult(result)
+        } catch (error) {
+            console.error('Error analyzing OCR:', error)
+            setOcrError('Nuk mund të analizojmë imazhin tani. Kontrollo formatin dhe provo përsëri.')
+        } finally {
+            setOcrLoading(false)
         }
     }
 
@@ -476,20 +789,7 @@ function App() {
 
 
 
-    const getClassProgress = () => {
-        // Filter progress by courses that belong to this class
-        const classProgress = progress.filter(() => {
-            // We need to check if the course belongs to this class
-            // For now, return a simple calculation based on available data
-            return true // This would need proper class-course mapping
-        })
-        if (classProgress.length === 0) return 0
-        
-        const completedLevels = classProgress.filter(p => p.completed).length
-        const totalLevels = classProgress.length
-        
-        return totalLevels > 0 ? (completedLevels / totalLevels) * 100 : 0
-    }
+    // getClassProgress removed - now using progress_percent from API directly
 
     const getLevelProgress = (levelId: number) => {
         const levelProgress = progress.filter(p => p.level_id === levelId)
@@ -506,56 +806,101 @@ function App() {
 
     const playAudio = async (exerciseId: number) => {
         try {
-            // Generate audio URL for the exercise
-            const audioUrl = `/api/audio-exercises/${exerciseId}?slow=true`
+            // Generate audio URL for the exercise with cache-busting for debugging
+            const audioUrl = `/api/audio-exercises/${exerciseId}?slow=true&voice=anila`
+            
+            console.log(`[Audio] Starting playback for exercise ${exerciseId}`)
+            setMessage('🎵 Duke ngarkuar audion...')
+            
             const audio = new Audio()
             
-            // Set loading message
-            setMessage('Duke ngarkuar audion... 🎵')
+            // Track loading state
+            let audioLoaded = false
             
             // Set up event listeners
             audio.onloadstart = () => {
-                setMessage('Duke luajtur audion... 🔊')
+                console.log(`[Audio] Load started for exercise ${exerciseId}`)
+                setMessage('🔊 Duke luajtur audion...')
             }
             
-            audio.oncanplaythrough = () => {
-                setMessage('Gati për të luajtur! 🎵')
+            audio.onloadedmetadata = () => {
+                console.log(`[Audio] Metadata loaded, duration: ${audio.duration}s`)
+                if (audio.duration === 0 || isNaN(audio.duration)) {
+                    console.error(`[Audio] Invalid duration for exercise ${exerciseId}`)
+                    setMessage('⚠️ Audio është bosh. Provoni një ushtrim tjetër ose kontaktoni mbështetjen.')
+                }
+            }
+            
+            audio.oncanplay = () => {
+                console.log(`[Audio] Can play exercise ${exerciseId}`)
+                audioLoaded = true
+            }
+            
+            audio.onplaying = () => {
+                console.log(`[Audio] Playing exercise ${exerciseId}`)
+                setMessage('🔊 Duke luajtur...')
             }
             
             audio.onended = () => {
-                setMessage('Audio u përfundua. Tani shkruaj përgjigjen! ✍️')
+                console.log(`[Audio] Ended exercise ${exerciseId}`)
+                setMessage('✅ Audio u përfundua. Tani shkruaj përgjigjen! ✍️')
             }
             
-            audio.onerror = (error) => {
-                console.error('Error playing audio:', error)
-                setMessage('Gabim në luajtjen e audios. Kontrollo lidhjen me internet! 🎵')
-            }
-            
-            audio.onloadeddata = () => {
-                console.log('Audio loaded successfully')
+            audio.onerror = (event) => {
+                console.error(`[Audio] Error for exercise ${exerciseId}:`, event)
+                console.error(`[Audio] Error details:`, audio.error)
+                
+                if (audio.error) {
+                    const errorCode = audio.error.code
+                    const errorMessages: Record<number, string> = {
+                        1: 'Ngarkimi u ndërpre (MEDIA_ERR_ABORTED)',
+                        2: 'Gabim rrjeti (MEDIA_ERR_NETWORK)',
+                        3: 'Gabim dekodimi (MEDIA_ERR_DECODE)',
+                        4: 'Format audio i pambështetur (MEDIA_ERR_SRC_NOT_SUPPORTED)'
+                    }
+                    const errorMsg = errorMessages[errorCode] || 'Gabim i panjohur'
+                    setMessage(`❌ Gabim audio për ushtrimin ${exerciseId}: ${errorMsg}`)
+                } else {
+                    setMessage(`❌ Gabim në luajtjen e audios për ushtrimin ${exerciseId}`)
+                }
             }
             
             // Set the source and load
             audio.src = audioUrl
             audio.load()
             
+            // Wait for audio to be ready (with timeout)
+            const loadTimeout = setTimeout(() => {
+                if (!audioLoaded) {
+                    console.warn(`[Audio] Load timeout for exercise ${exerciseId}`)
+                    setMessage('⏳ Audio po ngarkohet ngadalë. Ju lutem prisni...')
+                }
+            }, 3000)
+            
             // Try to play
             const playPromise = audio.play()
             if (playPromise !== undefined) {
                 await playPromise
+                clearTimeout(loadTimeout)
             }
+            
+            console.log(`[Audio] Playback started successfully for exercise ${exerciseId}`)
+            
         } catch (error) {
-            console.error('Error playing audio:', error)
+            console.error(`[Audio] Catch error for exercise ${exerciseId}:`, error)
+            
             if (error instanceof Error) {
                 if (error.name === 'NotAllowedError') {
-                    setMessage('Duhet të lejoni luajtjen e audios. Klikoni përsëri! 🎵')
+                    setMessage('🔒 Duhet të lejoni luajtjen e audios në shfletues. Klikoni sërish butonin!')
                 } else if (error.name === 'NotSupportedError') {
-                    setMessage('Shfletuesi nuk mbështet formatin e audios. Provo një shfletues tjetër! 🎵')
+                    setMessage('❌ Shfletuesi juaj nuk mbështet formatin audio. Provoni Chrome/Firefox/Safari!')
+                } else if (error.name === 'AbortError') {
+                    setMessage('⚠️ Audio u ndërpre. Klikoni përsëri për ta dëgjuar!')
                 } else {
-                    setMessage('Gabim në luajtjen e audios. Provo përsëri! 🎵')
+                    setMessage(`❌ Gabim audio: ${error.message}. Kontrolloni lidhjen me internet!`)
                 }
             } else {
-                setMessage('Gabim në luajtjen e audios. Provo përsëri! 🎵')
+                setMessage('❌ Gabim në luajtjen e audios. Provo përsëri!')
             }
         }
     }
@@ -850,72 +1195,71 @@ function App() {
     return (
         <div className="app">
             {/* HEADER SECTION */}
-                    <Header
-            userStats={userStats}
-            selectedClass={selectedClass}
-            selectedCourse={selectedCourse}
-            onBackToClasses={() => handleClassClick(null)}
-            onBackToCourses={() => handleCourseClick(null)}
-            onLogout={handleLogout}
-            onShowProfile={() => setShowProfile(true)}
-            onShowLeaderboard={async () => {
-                setShowLeaderboard(true)
-                try {
-                    const data = await getLeaderboard(50)
-                    setLeaderboardData(data)
-                    if (userId) {
-                        const rank = await getUserRank(parseInt(userId))
-                        setUserRank(rank)
-                    }
-                } catch (error) {
-                    console.error('Error fetching leaderboard:', error)
-                }
-            }}
-            onShowLevelInfo={async () => {
-                setShowLevelInfo(true)
-                // Fetch progress for all classes
-                if (userId && classes.length > 0) {
+            <Header
+                userStats={userStats}
+                selectedClass={selectedClass}
+                selectedCourse={selectedCourse}
+                onBackToClasses={() => handleClassClick(null)}
+                onBackToCourses={() => handleCourseClick(null)}
+                onLogout={handleLogout}
+                onShowProfile={() => setShowProfile(true)}
+                onShowLeaderboard={async () => {
+                    setShowLeaderboard(true)
                     try {
-                        const progressPromises = classes.map(async (cls) => {
-                            try {
-                                const courses = await getClassCourses(cls.id, userId)
-                                const completedCourses = courses.filter((c: CourseOut) => c.progress?.is_completed).length
-                                const totalCourses = courses.length
-                                const progressPercent = totalCourses > 0 ? (completedCourses / totalCourses) * 100 : 0
-                                
-                                return {
-                                    classId: cls.id,
-                                    className: cls.name,
-                                    completedCourses,
-                                    totalCourses,
-                                    progressPercent,
-                                    unlocked: cls.unlocked,
-                                    courses: courses
-                                }
-                            } catch (error) {
-                                return {
-                                    classId: cls.id,
-                                    className: cls.name,
-                                    completedCourses: 0,
-                                    totalCourses: 0,
-                                    progressPercent: 0,
-                                    unlocked: cls.unlocked,
-                                    courses: []
-                                }
-                            }
-                        })
-                        const progressData = await Promise.all(progressPromises)
-                        setClassProgressData(progressData)
+                        // Fetch all users for full leaderboard (limit=0 returns all)
+                        const data = await getLeaderboard(0)
+                        setLeaderboardData(data)
+                        if (userId) {
+                            const rank = await getUserRank(parseInt(userId))
+                            setUserRank(rank)
+                        }
                     } catch (error) {
-                        console.error('Error fetching class progress:', error)
+                        console.error('Error fetching leaderboard:', error)
                     }
-                }
-            }}
-        />
+                }}
+                onShowLevelInfo={async () => {
+                    setShowLevelInfo(true)
+                    if (userId && classes.length > 0) {
+                        try {
+                            const progressPromises = classes.map(async (cls) => {
+                                try {
+                                    const courses = await getClassCourses(cls.id, userId)
+                                    const completedCourses = courses.filter((c: CourseOut) => c.progress?.is_completed).length
+                                    const totalCourses = courses.length
+                                    const progressPercent = totalCourses > 0 ? (completedCourses / totalCourses) * 100 : 0
+                                    return {
+                                        classId: cls.id,
+                                        className: cls.name,
+                                        completedCourses,
+                                        totalCourses,
+                                        progressPercent,
+                                        unlocked: cls.unlocked,
+                                        courses: courses
+                                    }
+                                } catch (error) {
+                                    return {
+                                        classId: cls.id,
+                                        className: cls.name,
+                                        completedCourses: 0,
+                                        totalCourses: 0,
+                                        progressPercent: 0,
+                                        unlocked: cls.unlocked,
+                                        courses: []
+                                    }
+                                }
+                            })
+                            const progressData = await Promise.all(progressPromises)
+                            setClassProgressData(progressData)
+                        } catch (error) {
+                            console.error('Error fetching class progress:', error)
+                        }
+                    }
+                }}
+            />
 
-                        {/* MAIN CONTENT SECTION */}
+            {/* MAIN CONTENT SECTION */}
             <main className="main">
-                <MainContent 
+                <MainContent
                     isLoading={isLoading}
                     classes={classes}
                     selectedClass={selectedClass}
@@ -928,12 +1272,23 @@ function App() {
                     adaptiveDifficulty={adaptiveDifficulty}
                     learningPath={learningPath}
                     progressInsights={progressInsights}
+                    aiCoach={aiCoach}
+                    aiCoachLoading={aiCoachLoading}
+                    aiCoachError={aiCoachError}
+                    aiCoachLevel={aiCoachLevel}
+                    aiCoachLevelLoading={aiCoachLevelLoading}
+                    aiCoachLevelError={aiCoachLevelError}
                     showAIInsights={showAIInsights}
+                    userAchievements={userAchievements}
+                    userStreak={userStreak}
+                    dailyChallenge={dailyChallenge}
+                    srsStats={srsStats}
+                    showGamification={showGamification}
+                    setShowGamification={setShowGamification}
                     onClassClick={handleClassClick}
                     onCourseClick={handleCourseClick}
                     onLevelClick={handleLevelClick}
                     onToggleAIInsights={() => setShowAIInsights(!showAIInsights)}
-                    getClassProgress={getClassProgress}
                     getLevelProgress={getLevelProgress}
                     publicStats={publicStats}
                     exercises={exercises}
@@ -948,6 +1303,259 @@ function App() {
                     setCurrentExerciseIndex={setCurrentExerciseIndex}
                     setMessage={setMessage}
                 />
+
+                {selectedLevel && (
+                    <section className="ai-practice-section">
+                        <div className="ai-practice-header">
+                            <div>
+                                <h3>Ushtrime AI të personalizuara</h3>
+                                <p className="ai-practice-subtitle">
+                                    Merrni disa ushtrime shtesë të ndërtuara për vështirësitë që keni pasur.
+                                </p>
+                            </div>
+                            <button
+                                className="ai-practice-button primary"
+                                onClick={handleGenerateAIPractice}
+                                disabled={aiLoading}
+                            >
+                                {aiLoading ? 'Po gjeneroj...' : 'Gjenero ushtrime shtesë'}
+                            </button>
+                        </div>
+
+                        {aiError && <div className="ai-practice-error">{aiError}</div>}
+                        {aiMessage && <div className="ai-practice-note">{aiMessage}</div>}
+
+                        {aiExercises.length > 0 ? (
+                            <div className="ai-practice-list">
+                                {aiExercises.map(exercise => (
+                                    <div key={exercise.id} className="ai-practice-card">
+                                        <p className="ai-practice-prompt">{exercise.prompt}</p>
+                                        {exercise.hint && (
+                                            <p className="ai-practice-hint">{exercise.hint}</p>
+                                        )}
+                                        <input
+                                            type="text"
+                                            className="ai-practice-input"
+                                            placeholder="Shkruaj përgjigjen..."
+                                            value={aiResponses[exercise.id] || ''}
+                                            onChange={(e) => handleAIResponseChange(exercise.id, e.target.value)}
+                                        />
+                                        <button
+                                            className="ai-practice-check"
+                                            onClick={() => handleAIExerciseCheck(exercise)}
+                                        >
+                                            Kontrollo
+                                        </button>
+                                        {aiFeedback[exercise.id] && (
+                                            <p className="ai-practice-feedback">{aiFeedback[exercise.id]}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="ai-practice-empty">
+                                Klikoni “Gjenero ushtrime shtesë” për të marrë ushtrime të përshtatura në bazë të gabimeve.
+                            </p>
+                        )}
+                    </section>
+                )}
+
+                {/* OCR only on the learning home page (no class/course/level selected) */}
+                {!selectedClass && !selectedCourse && !selectedLevel && (
+                    <section className="ocr-section">
+                        <div className="ocr-header">
+                            <div>
+                                <h3>Kontrolli i diktimeve me OCR</h3>
+                                <p className="ocr-subtitle">
+                                    Ngarkoni një imazh me diktimin tuaj në shqip. Sistemi do të nxjerrë tekstin dhe do të analizojë gabimet e drejtshkrimit.
+                                </p>
+                            </div>
+                            <button className="ocr-button" onClick={handleOCRSubmit} disabled={ocrLoading}>
+                                {ocrLoading ? 'Analizoj...' : 'Analizo imazhin'}
+                            </button>
+                        </div>
+
+                        <div className="ocr-form">
+                            <label className="ocr-field">
+                                <span>Foto e diktimit:</span>
+                                <input type="file" accept="image/*" onChange={handleSelectOCRFile} />
+                            </label>
+                            <label className="ocr-field">
+                                <span>Teksti që prisni të shfaqet (opsionale):</span>
+                                <textarea
+                                    rows={3}
+                                    value={ocrExpected}
+                                    onChange={(e) => setOcrExpected(e.target.value)}
+                                    placeholder="Shkruani tekstin që prisni të dalë"
+                                />
+                            </label>
+                        </div>
+
+                        {ocrError && <div className="ocr-error">{ocrError}</div>}
+
+                        {ocrResult && (
+                            <div className="ocr-result">
+                                <h4>Teksti i njohur nga imazhi</h4>
+                                {ocrResult.meta?.ocr_confidence_avg !== undefined && (
+                                    <p className="ocr-meta">
+                                        Besueshmëria OCR (mesatare): <strong>{Math.round(ocrResult.meta.ocr_confidence_avg)}%</strong> • Fjalë të nxjerra: <strong>{ocrResult.meta.tokens_extracted ?? '-'}</strong>
+                                    </p>
+                                )}
+                                <p className="ocr-text">{ocrResult.extracted_text || '---'}</p>
+                                {(ocrResult.issues?.length || ocrResult.errors.length) > 0 ? (
+                                    <div className="ocr-errors">
+                                        <h5>Gabime drejtshkrimore të identifikuara</h5>
+                                        <ul>
+                                            {(ocrResult.issues || ocrResult.errors).map((err: any) => (
+                                                <li key={`${err.position}-${err.token || err.recognized || ''}`}>
+                                                    {err.expected ? (
+                                                        <>Pozicioni {err.position}: prisni <strong>{err.expected}</strong>, shkruhet <strong>{err.recognized || err.token || 'pa tekst'}</strong></>
+                                                    ) : (
+                                                        <>
+                                                            <span className={`ocr-badge ${err.source === 'ocr' ? 'ocr-badge-ocr' : 'ocr-badge-orth'}`}>
+                                                                {err.source === 'ocr' ? 'OCR' : 'Drejtshkrim'}
+                                                            </span>{' '}
+                                                            Fjala <strong>{err.token || err.recognized}</strong>
+                                                            {err.ocr_confidence !== undefined && err.ocr_confidence !== null && err.ocr_confidence >= 0 ? <> (<span className="ocr-conf">OCR {Math.round(err.ocr_confidence)}%</span>)</> : null}
+                                                            {typeof err.likelihood === 'number' ? <> • <span className="ocr-like">Prob. {Math.round(err.likelihood * 100)}%</span></> : null}
+                                                            : {err.message || 'Dyshohet gabim drejtshkrimi.'}
+                                                            {err.suggestions?.length ? <> (Sugjerime: <strong>{err.suggestions.join(', ')}</strong>)</> : null}
+                                                        </>
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ) : (
+                                    <p className="ocr-clean">Nuk u gjetën gabime. Drejtshkrim i pastër!</p>
+                                )}
+                                {ocrResult.suggestions.length > 0 && (
+                                    <p className="ocr-suggestions">
+                                        Sugjerimet për përsëritje: {ocrResult.suggestions.join(', ')}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </section>
+                )}
+            </main>
+
+            {/* AI Chatbot */}
+            <button
+                className={`chatbot-float-btn ${showChatbot ? 'active' : ''}`}
+                onClick={() => setShowChatbot(!showChatbot)}
+                aria-label="AI Chatbot"
+            >
+                {showChatbot ? '✕' : '💬'}
+                {!showChatbot && <span className="chatbot-badge">AI</span>}
+            </button>
+
+            {showChatbot && (
+                <div className="chatbot-panel">
+                    <div className="chatbot-header">
+                        <div className="chatbot-header-content">
+                            <h3>🤖 AI Chatbot</h3>
+                            <p className="chatbot-subtitle">Pyetni çdo gjë për platformën</p>
+                        </div>
+                        <button
+                            className="chatbot-close"
+                            onClick={() => setShowChatbot(false)}
+                            aria-label="Mbyll"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    <div className="chatbot-messages">
+                        {chatMessages.length === 0 ? (
+                            <div className="chatbot-welcome">
+                                <div className="chatbot-avatar">🤖</div>
+                                <h4>Mirësevini te AI Chatbot!</h4>
+                                <p>Si mund t'ju ndihmoj sot?</p>
+                                {chatSuggestions.length > 0 && (
+                                    <div className="chatbot-suggestions">
+                                        <p className="suggestions-title">Pyetje të shpeshta:</p>
+                                        {chatSuggestions.map((suggestion: string, idx: number) => (
+                                            <button
+                                                key={idx}
+                                                className="suggestion-btn"
+                                                onClick={() => handleChatbotSend(suggestion)}
+                                            >
+                                                {suggestion}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                {chatMessages.map((msg, idx) => (
+                                    <div key={idx} className={`chat-message ${msg.role}`}>
+                                        {msg.role === 'assistant' && (
+                                            <div className="message-avatar">🤖</div>
+                                        )}
+                                        <div className="message-content">
+                                            <div className="message-text">{msg.content}</div>
+                                            {msg.suggestions && msg.suggestions.length > 0 && (
+                                                <div className="message-suggestions">
+                                                    {msg.suggestions.map((sugg: string, sidx: number) => (
+                                                        <button
+                                                            key={sidx}
+                                                            className="suggestion-chip"
+                                                            onClick={() => handleChatbotSend(sugg)}
+                                                        >
+                                                            {sugg}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                        {msg.role === 'user' && (
+                                            <div className="message-avatar user-avatar">👤</div>
+                                        )}
+                                    </div>
+                                ))}
+                                {chatLoading && (
+                                    <div className="chat-message assistant">
+                                        <div className="message-avatar">🤖</div>
+                                        <div className="message-content">
+                                            <div className="typing-indicator">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+
+                    <div className="chatbot-input-area">
+                        <input
+                            type="text"
+                            className="chatbot-input"
+                            placeholder="Shkruani një pyetje..."
+                            value={chatInput}
+                            onChange={(e) => setChatInput(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault()
+                                    handleChatbotSend()
+                                }
+                            }}
+                            disabled={chatLoading}
+                        />
+                        <button
+                            className="chatbot-send-btn"
+                            onClick={() => handleChatbotSend()}
+                            disabled={chatLoading || !chatInput.trim()}
+                        >
+                            {chatLoading ? '⏳' : '➤'}
+                        </button>
+                    </div>
+                </div>
+            )}
 
                 {showProfile && (
                     <div className="profile-overlay" onClick={() => setShowProfile(false)}>
@@ -1289,16 +1897,9 @@ function App() {
                     </div>
                 )}
 
-            </main>
-
             {/* FOOTER SECTION */}
             <Footer />
-
-
-
             {message && <div className="message">{message}</div>}
-
-
         </div>
     )
 }
@@ -1414,12 +2015,23 @@ function MainContent({
     adaptiveDifficulty,
     learningPath,
     progressInsights,
+    aiCoach,
+    aiCoachLoading,
+    aiCoachError,
+    aiCoachLevel,
+    aiCoachLevelLoading,
+    aiCoachLevelError,
     showAIInsights,
+    userAchievements,
+    userStreak,
+    dailyChallenge,
+    srsStats,
+    showGamification,
+    setShowGamification,
     onClassClick,
     onCourseClick,
     onLevelClick,
     onToggleAIInsights,
-    getClassProgress,
     getLevelProgress,
     publicStats,
     exercises,
@@ -1446,12 +2058,23 @@ function MainContent({
     adaptiveDifficulty: any
     learningPath: any
     progressInsights: any
+    aiCoach: AICoachResponse | null
+    aiCoachLoading: boolean
+    aiCoachError: string | null
+    aiCoachLevel: AICoachResponse | null
+    aiCoachLevelLoading: boolean
+    aiCoachLevelError: string | null
     showAIInsights: boolean
+    userAchievements: UserAchievementsResponse | null
+    userStreak: StreakData | null
+    dailyChallenge: DailyChallenge | null
+    srsStats: SRSStatsResponse | null
+    showGamification: boolean
+    setShowGamification: (value: boolean) => void
     onClassClick: (classData: ClassData | null) => void
     onCourseClick: (course: CourseOut | null) => void
     onLevelClick: (level: LevelOut | null) => void
     onToggleAIInsights: () => void
-    getClassProgress: () => number
     getLevelProgress: (levelId: number) => number
     publicStats: {
         total_classes: number
@@ -1471,59 +2094,6 @@ function MainContent({
     setCurrentExerciseIndex: React.Dispatch<React.SetStateAction<number>>
     setMessage: React.Dispatch<React.SetStateAction<string>>
 }) {
-    // Helper function to calculate global level number across all classes
-    // This counts all levels in previous classes + previous courses in current class + current level position
-    const getGlobalLevelNumber = (level: LevelOut, currentClass: ClassData | null, currentCourse: CourseOut | null, allClasses: ClassData[]): number => {
-        if (!currentClass || !currentCourse) {
-            return level.order_index
-        }
-        
-        let globalLevelNumber = 0
-        // Sort classes by order_index
-        const sortedClasses = [...allClasses].sort((a, b) => a.order_index - b.order_index)
-        
-        for (const cls of sortedClasses) {
-            if (cls.id === currentClass.id) {
-                // We're in the current class
-                // Sort courses by order_index
-                const sortedCourses = [...cls.courses].sort((a, b) => a.order_index - b.order_index)
-                
-                for (const c of sortedCourses) {
-                    if (c.id === currentCourse.id) {
-                        // We're in the current course
-                        // Find the position of current level in sorted levels
-                        const sortedLevels = [...courseLevels].sort((a, b) => a.order_index - b.order_index)
-                        const levelIndex = sortedLevels.findIndex(l => l.id === level.id)
-                        if (levelIndex >= 0) {
-                            globalLevelNumber += levelIndex + 1
-                        }
-                        break
-                    } else {
-                        // Add all levels from this previous course in the same class
-                        // Use classCourses to get the course and check if it has levels loaded
-                        const courseInClass = classCourses.find(course => course.id === c.id)
-                        if (courseInClass && courseInClass.levels && courseInClass.levels.length > 0) {
-                            globalLevelNumber += courseInClass.levels.length
-                        } else if (c.levels && c.levels.length > 0) {
-                            globalLevelNumber += c.levels.length
-                        }
-                    }
-                }
-                break
-            } else {
-                // Add all levels from this previous class
-                // Count all levels in all courses of this class
-                for (const c of cls.courses) {
-                    if (c.levels && c.levels.length > 0) {
-                        globalLevelNumber += c.levels.length
-                    }
-                }
-            }
-        }
-        
-        return globalLevelNumber > 0 ? globalLevelNumber : level.order_index
-    }
-    
     return (
         <div className="main-content">
             {/* Sidebar with Classes and AI Insights */}
@@ -1534,7 +2104,18 @@ function MainContent({
                         <span className="classes-count">{classes.length} klasa</span>
                     </div>
                     <div className="class-list-modern">
-                        {classes.map((classData) => {
+                        {isLoading && classes.length === 0 ? (
+                            // Skeleton loading for classes
+                            <>
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={`skeleton-${i}`} className="skeleton-card">
+                                        <div className="skeleton skeleton-circle" style={{marginBottom: '12px'}}></div>
+                                        <div className="skeleton skeleton-title"></div>
+                                        <div className="skeleton skeleton-text short"></div>
+                                    </div>
+                                ))}
+                            </>
+                        ) : classes.map((classData) => {
                             const progress = (classData as any).progress_percent || 0
                             const isSelected = selectedClass?.id === classData.id
                             return (
@@ -1665,6 +2246,180 @@ function MainContent({
                                                     <span>{insight}</span>
                                                 </div>
                                             ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="ai-card-modern">
+                                    <div className="ai-card-header-modern">
+                                        <span className="ai-icon">🧠</span>
+                                        <h4>AI Coach (Drejtshkrim)</h4>
+                                    </div>
+                                    {aiCoachLoading && <p className="ai-message-modern">Po analizoj gabimet...</p>}
+                                    {aiCoachError && <p className="ai-message-modern">{aiCoachError}</p>}
+                                    {selectedLevel && (
+                                        <>
+                                            <p className="ai-message-modern">
+                                                <strong>Fokus: Niveli {selectedLevel.order_index}</strong>
+                                            </p>
+                                            {aiCoachLevelLoading && <p className="ai-message-modern">Po analizoj gabimet e nivelit...</p>}
+                                            {aiCoachLevelError && <p className="ai-message-modern">{aiCoachLevelError}</p>}
+                                            {aiCoachLevel && (
+                                                <>
+                                                    <div className="insights-list-modern">
+                                                        {aiCoachLevel.patterns.slice(0, 3).map((p: any) => (
+                                                            <div key={`lvl-${p.type}`} className="insight-item-modern">
+                                                                <span className="insight-bullet">•</span>
+                                                                <span><strong>{p.type}</strong>: {p.count}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            )}
+                                            <hr style={{ border: 'none', borderTop: '1px solid rgba(15, 23, 42, 0.08)', margin: '10px 0' }} />
+                                        </>
+                                    )}
+
+                                    {aiCoach && (
+                                        <>
+                                            <p className="ai-message-modern">
+                                                Analizoi {aiCoach.total_attempts_analyzed} tentativa ({aiCoach.incorrect_attempts_analyzed} gabim).
+                                            </p>
+                                            <div className="insights-list-modern">
+                                                {aiCoach.patterns.slice(0, 4).map((p: any) => (
+                                                    <div key={p.type} className="insight-item-modern">
+                                                        <span className="insight-bullet">•</span>
+                                                        <span><strong>{p.type}</strong>: {p.count}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="insights-list-modern">
+                                                {aiCoach.micro_lessons.slice(0, 2).map((t: string, i: number) => (
+                                                    <div key={i} className="insight-item-modern">
+                                                        <span className="insight-bullet">📌</span>
+                                                        <span>{t}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="insights-list-modern">
+                                                {aiCoach.drill_plan.slice(0, 2).map((t: string, i: number) => (
+                                                    <div key={i} className="insight-item-modern">
+                                                        <span className="insight-bullet">✅</span>
+                                                        <span>{t}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Gamification Panel */}
+                {userId && (userStreak || dailyChallenge || userAchievements || srsStats) && (
+                    <div className="sidebar-section gamification-modern">
+                        <div className="gamification-header-modern">
+                            <div className="gamification-header-content">
+                                <h3>🏆 Arritjet</h3>
+                                <span className="gamification-badge">Gamifikimi</span>
+                            </div>
+                            <button
+                                className="gamification-toggle-modern"
+                                onClick={() => setShowGamification(!showGamification)}
+                                aria-label="Toggle Gamification"
+                            >
+                                {showGamification ? '▼' : '▶'}
+                            </button>
+                        </div>
+
+                        {showGamification && (
+                            <div className="gamification-content-modern">
+                                {/* Streak */}
+                                {userStreak && (
+                                    <div className="gamification-card-modern">
+                                        <div className="gamification-card-header-modern">
+                                            <span className="gamification-icon">🔥</span>
+                                            <h4>Streak</h4>
+                                        </div>
+                                        <div className="streak-display">
+                                            <div className="streak-current">
+                                                <span className="streak-number">{userStreak.current_streak}</span>
+                                                <span className="streak-label">ditë aktualisht</span>
+                                            </div>
+                                            <div className="streak-best">
+                                                Më e mira: {userStreak.longest_streak} ditë
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Daily Challenge */}
+                                {dailyChallenge && (
+                                    <div className="gamification-card-modern">
+                                        <div className="gamification-card-header-modern">
+                                            <span className="gamification-icon">🎯</span>
+                                            <h4>Sfida Ditore</h4>
+                                        </div>
+                                        <p className="challenge-description">{dailyChallenge.description}</p>
+                                        {dailyChallenge.user_progress && (
+                                            <div className="challenge-progress">
+                                                <div className="progress-bar">
+                                                    <div 
+                                                        className="progress-fill"
+                                                        style={{
+                                                            width: `${Math.min(100, (dailyChallenge.user_progress.current_value / (dailyChallenge.target_value || 1)) * 100)}%`
+                                                        }}
+                                                    ></div>
+                                                </div>
+                                                <div className="progress-text">
+                                                    {dailyChallenge.user_progress.current_value} / {dailyChallenge.target_value}
+                                                    {dailyChallenge.user_progress.completed && <span className="completed-badge">✅ Përfunduar</span>}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Achievements */}
+                                {userAchievements && userAchievements.total_achievements > 0 && (
+                                    <div className="gamification-card-modern">
+                                        <div className="gamification-card-header-modern">
+                                            <span className="gamification-icon">🏅</span>
+                                            <h4>Arritjet e Fituara</h4>
+                                        </div>
+                                        <div className="achievements-count">{userAchievements.total_achievements} arritje</div>
+                                        <div className="achievements-list">
+                                            {userAchievements.achievements.slice(0, 3).map((achievement) => (
+                                                <div key={achievement.id} className="achievement-item">
+                                                    <span className="achievement-icon">{achievement.icon}</span>
+                                                    <div className="achievement-info">
+                                                        <div className="achievement-name">{achievement.name}</div>
+                                                        <div className="achievement-desc">{achievement.description}</div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* SRS Stats */}
+                                {srsStats && srsStats.total_cards > 0 && (
+                                    <div className="gamification-card-modern">
+                                        <div className="gamification-card-header-modern">
+                                            <span className="gamification-icon">📇</span>
+                                            <h4>Përsëritje me Hapsirë</h4>
+                                        </div>
+                                        <div className="srs-stats">
+                                            <div className="srs-stat">
+                                                <span className="srs-value">{srsStats.due_cards}</span>
+                                                <span className="srs-label">Karta për sot</span>
+                                            </div>
+                                            <div className="srs-stat">
+                                                <span className="srs-value">{Math.round(srsStats.accuracy)}%</span>
+                                                <span className="srs-label">Saktësi SRS</span>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -1800,7 +2555,19 @@ function MainContent({
                         
                         {/* Show courses for the selected class */}
                         <div className="course-preview-grid-modern">
-                            {classCourses.map((course, index) => {
+                            {isLoading && classCourses.length === 0 ? (
+                                // Skeleton loading for courses
+                                <div className="skeleton-grid">
+                                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                                        <div key={`skeleton-course-${i}`} className="skeleton-card">
+                                            <div className="skeleton skeleton-circle" style={{width: '80px', height: '80px', margin: '0 auto 12px'}}></div>
+                                            <div className="skeleton skeleton-title" style={{margin: '0 auto 12px'}}></div>
+                                            <div className="skeleton skeleton-text medium" style={{margin: '0 auto 8px'}}></div>
+                                            <div className="skeleton skeleton-button" style={{margin: '12px auto 0'}}></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : classCourses.map((course, index) => {
                                 const progressPercent = course.progress 
                                     ? Math.min(100, (course.progress.completed_exercises / Math.max(1, course.progress.total_exercises)) * 100)
                                     : 0
@@ -1919,20 +2686,27 @@ function MainContent({
                         
                         {/* Show levels for the selected course */}
                         <div className="level-grid-modern">
-                            {courseLevels.map((level, index) => {
+                            {isLoading && courseLevels.length === 0 ? (
+                                // Skeleton loading for levels
+                                <>
+                                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                                        <div key={`skeleton-level-${i}`} className="skeleton-card">
+                                            <div className="skeleton skeleton-circle" style={{width: '50px', height: '50px', marginBottom: '12px'}}></div>
+                                            <div className="skeleton skeleton-title"></div>
+                                            <div className="skeleton skeleton-text short"></div>
+                                            <div className="skeleton skeleton-text" style={{width: '80%', marginTop: '12px'}}></div>
+                                        </div>
+                                    ))}
+                                </>
+                            ) : courseLevels.map((level, index) => {
                                 const levelProgress = getLevelProgress(level.id)
                                 
-                                // Calculate global level number across all classes
-                                const globalLevelNumber = getGlobalLevelNumber(level, selectedClass, selectedCourse, classes)
-                                
-                                // Format level name as "Niveli X Klasa Y" with global numbering
+                                // Format level name as "Niveli X Klasa Y" (each class starts from Niveli 1)
                                 // Get class number with fallback
                                 const classNumber = selectedClass 
                                     ? (selectedClass.order_index || classes.findIndex(c => c.id === selectedClass.id) + 1 || 1)
                                     : 1
-                                const levelDisplayName = selectedClass && globalLevelNumber > 0
-                                    ? `Niveli ${globalLevelNumber} Klasa ${classNumber}`
-                                    : selectedClass
+                                const levelDisplayName = selectedClass
                                     ? `Niveli ${level.order_index} Klasa ${classNumber}`
                                     : level.name
                                 return (
@@ -1986,9 +2760,8 @@ function MainContent({
                                 <h2 className="exercise-title-modern">
                                     {selectedLevel && selectedClass && selectedCourse
                                         ? (() => {
-                                            const globalLevelNumber = getGlobalLevelNumber(selectedLevel, selectedClass, selectedCourse, classes)
                                             const classNumber = selectedClass.order_index || classes.findIndex(c => c.id === selectedClass.id) + 1 || 1
-                                            return `Niveli ${globalLevelNumber} Klasa ${classNumber}`
+                                            return `Niveli ${selectedLevel.order_index} Klasa ${classNumber}`
                                           })()
                                         : selectedLevel?.name || 'Ushtrimet'
                                     }
@@ -1996,9 +2769,8 @@ function MainContent({
                                 <p className="exercise-subtitle-modern">
                                     {selectedLevel.description ? selectedLevel.description : (() => {
                                         if (selectedLevel && selectedClass && selectedCourse) {
-                                            const globalLevelNumber = getGlobalLevelNumber(selectedLevel, selectedClass, selectedCourse, classes)
                                             const classNumber = selectedClass.order_index || classes.findIndex(c => c.id === selectedClass.id) + 1 || 1
-                                            return `Përgjigjuni pyetjeve për të përfunduar Niveli ${globalLevelNumber} Klasa ${classNumber}`
+                                            return `Përgjigjuni pyetjeve për të përfunduar Niveli ${selectedLevel.order_index} Klasa ${classNumber}`
                                         }
                                         return `Përgjigjuni pyetjeve për të përfunduar ${selectedLevel?.name || 'ushtrimet'}`
                                     })()}

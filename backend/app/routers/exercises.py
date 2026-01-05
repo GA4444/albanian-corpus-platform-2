@@ -6,6 +6,8 @@ from app.models import Exercise, Progress, User, Course, Level, Attempt, CourseP
 from app.schemas import SubmitRequest, SubmitResult, ExerciseOut
 from typing import List
 from datetime import datetime
+import unicodedata
+import re
 
 router = APIRouter()
 
@@ -39,8 +41,54 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Check if answer is correct
-    is_correct = exercise.answer.lower().strip() == request.response.lower().strip()
+    # Check if answer is correct (case-insensitive, normalize whitespace, normalize unicode)
+    # Ensure we have string values (handle None cases)
+    exercise_answer_str = str(exercise.answer) if exercise.answer else ""
+    user_response_str = str(request.response) if request.response else ""
+    
+    # Normalize Unicode and convert to lowercase
+    exercise_answer_normalized = unicodedata.normalize('NFKC', exercise_answer_str.lower().strip())
+    user_response_normalized = unicodedata.normalize('NFKC', user_response_str.lower().strip())
+    
+    # Normalize whitespace: replace multiple spaces/tabs/newlines with single space
+    exercise_answer_clean = re.sub(r'\s+', ' ', exercise_answer_normalized)
+    user_response_clean = re.sub(r'\s+', ' ', user_response_normalized)
+    
+    # Remove any remaining leading/trailing whitespace after normalization
+    exercise_answer_clean = exercise_answer_clean.strip()
+    user_response_clean = user_response_clean.strip()
+    
+    # First try: exact match after normalization
+    is_correct = exercise_answer_clean == user_response_clean
+    
+    # If not matching, try removing all spaces (for cases where user adds spaces or answer has spaces)
+    if not is_correct:
+        exercise_no_spaces = ''.join(exercise_answer_clean.split())
+        user_no_spaces = ''.join(user_response_clean.split())
+        # Accept if they match without spaces (handles both "e kuqe" vs "ekuqe" and "zogi" vs "z ogi")
+        if exercise_no_spaces == user_no_spaces and exercise_no_spaces:
+            is_correct = True
+    
+    # Log for debugging when answer doesn't match (only in development)
+    if not is_correct:
+        print(f"[DEBUG] Answer mismatch for exercise {exercise_id}:")
+        print(f"  Exercise answer (original): '{exercise.answer}' (type: {type(exercise.answer)})")
+        print(f"  Exercise answer (cleaned): '{exercise_answer_clean}' (len={len(exercise_answer_clean)})")
+        print(f"  User response (original): '{request.response}' (type: {type(request.response)})")
+        print(f"  User response (cleaned): '{user_response_clean}' (len={len(user_response_clean)})")
+        print(f"  Exercise bytes: {exercise_answer_clean.encode('utf-8')}")
+        print(f"  User bytes: {user_response_clean.encode('utf-8')}")
+        print(f"  Characters comparison:")
+        max_len = max(len(exercise_answer_clean), len(user_response_clean))
+        for i in range(max_len):
+            ec = exercise_answer_clean[i] if i < len(exercise_answer_clean) else None
+            uc = user_response_clean[i] if i < len(user_response_clean) else None
+            if ec != uc:
+                ec_str = f"'{ec}' (code: {ord(ec)})" if ec else "None"
+                uc_str = f"'{uc}' (code: {ord(uc)})" if uc else "None"
+                print(f"    Position {i}: {ec_str} vs {uc_str}")
+        if len(exercise_answer_clean) != len(user_response_clean):
+            print(f"  Length mismatch: {len(exercise_answer_clean)} vs {len(user_response_clean)}")
     
     # Calculate points (use exercise.points directly)
     points_earned = exercise.points if is_correct else 0
@@ -118,13 +166,45 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
         Progress.completed == True
     ).count()
     
-    course_completed = completed_levels == len(course_levels)
+    # Course is completed only if all levels are completed AND we have at least one level
+    course_completed = (completed_levels == len(course_levels)) and len(course_levels) > 0 and completed_levels > 0
     
     db.commit()
     
     # Update course progress
     from .course_progression import update_course_progress
     course_progress = update_course_progress(db, int(request.user_id), exercise.course_id)
+    
+    # ========== GAMIFICATION INTEGRATION ==========
+    try:
+        from .gamification import (
+            update_user_streak,
+            check_and_award_achievements,
+            update_daily_challenge_progress,
+            create_srs_card_for_mistake
+        )
+        
+        # 1. Update streak (every submission)
+        update_user_streak(db, request.user_id)
+        
+        # 2. Update daily challenge progress
+        update_daily_challenge_progress(db, request.user_id, "complete_n_exercises", increment=1)
+        
+        # 3. If perfect answer, update perfect_accuracy challenge
+        if is_correct:
+            update_daily_challenge_progress(db, request.user_id, "perfect_accuracy", increment=1)
+        
+        # 4. Check and award any achievements earned
+        check_and_award_achievements(db, request.user_id)
+        
+        # 5. If answer is wrong, create SRS card for spaced repetition
+        if not is_correct:
+            create_srs_card_for_mistake(db, request.user_id, exercise_id)
+    
+    except Exception as e:
+        # Gamification is optional - don't break the main flow if it fails
+        print(f"[WARNING] Gamification error: {e}")
+    # ==============================================
     
     # Prepare response message
     if is_correct:

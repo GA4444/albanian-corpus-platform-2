@@ -78,6 +78,46 @@ class SubmitResult(BaseModel):
 	message: str
 
 
+class PersonalizedPracticeExerciseOut(BaseModel):
+	id: str
+	prompt: str
+	answer: str
+	category: str
+	hint: Optional[str] = None
+	order_index: int
+
+
+class PersonalizedPracticeRequest(BaseModel):
+	user_id: str
+	class_id: Optional[int]
+	level_id: int
+
+
+class PersonalizedPracticeResponse(BaseModel):
+	exercises: List[PersonalizedPracticeExerciseOut]
+	message: str
+
+
+class AICoachRequest(BaseModel):
+	user_id: str
+	level_id: Optional[int] = None
+
+
+class AICoachMistakePattern(BaseModel):
+	type: str
+	count: int
+	examples: List[str] = []
+
+
+class AICoachResponse(BaseModel):
+	user_id: str
+	level_id: Optional[int] = None
+	total_attempts_analyzed: int
+	incorrect_attempts_analyzed: int
+	patterns: List[AICoachMistakePattern]
+	micro_lessons: List[str]
+	drill_plan: List[str]
+
 class ProgressOut(BaseModel):
 	category: CategoryEnum
 	course_id: int

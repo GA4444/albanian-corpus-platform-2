@@ -71,7 +71,7 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
 					classesData.map(async (classData: ClassData) => {
 						try {
 							const coursesWithLevels = await Promise.all(
-								classData.courses.map(async (course) => {
+								(classData.courses || []).map(async (course) => {
 									try {
 										// Fetch levels for this course
 										const levels = await getCourseLevels(course.id)
@@ -273,7 +273,7 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
 					if (cls.id === classData.id) {
 						// We're in the current class
 						// Sort courses by order_index
-						const sortedCourses = [...cls.courses].sort((a, b) => a.order_index - b.order_index)
+						const sortedCourses = [...(cls.courses || [])].sort((a, b) => a.order_index - b.order_index)
 						
 						for (const c of sortedCourses) {
 							if (c.id === course.id) {
@@ -294,7 +294,7 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
 					} else {
 						// Add all levels from this previous class
 						// Sort courses by order_index and count all levels
-						const sortedCourses = [...cls.courses].sort((a, b) => a.order_index - b.order_index)
+						const sortedCourses = [...(cls.courses || [])].sort((a, b) => a.order_index - b.order_index)
 						for (const c of sortedCourses) {
 							const courseLevels = c.levels || []
 							globalLevelNumber += courseLevels.length
@@ -436,7 +436,7 @@ export default function AdminDashboard({ userId, onLogout }: AdminDashboardProps
 												<td>{cls.id}</td>
 												<td>{cls.name}</td>
 												<td>{cls.description || '-'}</td>
-												<td>{cls.courses.length}</td>
+												<td>{(cls.courses || []).length}</td>
 												<td>{cls.enabled ? '✅ Aktiv' : '❌ Jo aktiv'}</td>
 												<td>
 													<button onClick={() => handleEditClass(cls)}>✏️ Edito</button>

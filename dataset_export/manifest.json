@@ -1,0 +1,42 @@
+{
+  "generated_at_utc": "2026-01-05T18:56:43.443838Z",
+  "database": "sqlite:///./dev.db (default)",
+  "format": "jsonl",
+  "tables": {
+    "courses": {
+      "rows": 116,
+      "path": "courses.jsonl"
+    },
+    "levels": {
+      "rows": 113,
+      "path": "levels.jsonl"
+    },
+    "exercises": {
+      "rows": 763,
+      "path": "exercises.jsonl"
+    },
+    "attempts": {
+      "rows": 417,
+      "path": "attempts.jsonl"
+    },
+    "progress": {
+      "rows": 45,
+      "path": "progress.jsonl"
+    },
+    "course_progress": {
+      "rows": 578,
+      "path": "course_progress.jsonl"
+    },
+    "users": {
+      "rows": 13,
+      "path": "users.jsonl"
+    }
+  },
+  "privacy": {
+    "users_included": true,
+    "attempts_included": true,
+    "progress_included": true,
+    "user_ids_anonymized": true,
+    "note": "Keep ANONYMIZATION_SALT.txt private if sharing datasets publicly."
+  }
+}

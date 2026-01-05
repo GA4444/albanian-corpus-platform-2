@@ -8,6 +8,8 @@ import speech_recognition as sr
 from pydub import AudioSegment
 import uuid
 import json
+import time
+from typing import Optional, Literal
 
 router = APIRouter()
 
@@ -15,27 +17,150 @@ router = APIRouter()
 TEMP_AUDIO_DIR = "temp_audio"
 os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
 
+# Azure TTS (optional - falls back to gTTS if not configured)
+AZURE_SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
+AZURE_SPEECH_REGION = os.getenv("AZURE_SPEECH_REGION", "westeurope")
+
+try:
+	import azure.cognitiveservices.speech as speechsdk
+	AZURE_AVAILABLE = bool(AZURE_SPEECH_KEY)
+except ImportError:
+	AZURE_AVAILABLE = False
+	speechsdk = None
+
+
+def _generate_speech_azure(
+	text: str,
+	voice_name: str = "sq-AL-AnilaNeural",
+	rate: str = "+0%",
+	pitch: str = "+0Hz",
+	output_path: str = None
+) -> str:
+	"""
+	Generate speech using Azure TTS Neural Voices (Albanian).
+	
+	Available Albanian voices:
+	- sq-AL-AnilaNeural (female, warm and clear)
+	- sq-AL-IlirNeural (male, authoritative)
+	
+	Args:
+		text: Text to convert to speech
+		voice_name: Azure voice name
+		rate: Speech rate (e.g., "+0%", "-10%", "+20%")
+		pitch: Speech pitch (e.g., "+0Hz", "-2Hz", "+5Hz")
+		output_path: Path to save audio file
+	
+	Returns:
+		Path to generated audio file
+	"""
+	if not AZURE_AVAILABLE or not AZURE_SPEECH_KEY:
+		raise ValueError("Azure TTS not configured")
+	
+	speech_config = speechsdk.SpeechConfig(subscription=AZURE_SPEECH_KEY, region=AZURE_SPEECH_REGION)
+	
+	# Use SSML for advanced control
+	ssml = f"""
+	<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="sq-AL">
+		<voice name="{voice_name}">
+			<prosody rate="{rate}" pitch="{pitch}">
+				{text}
+			</prosody>
+		</voice>
+	</speak>
+	"""
+	
+	if not output_path:
+		output_path = os.path.join(TEMP_AUDIO_DIR, f"azure_tts_{uuid.uuid4()}.mp3")
+	
+	audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
+	synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+	
+	result = synthesizer.speak_ssml_async(ssml).get()
+	
+	if result.reason != speechsdk.ResultReason.SynthesizingAudioCompleted:
+		raise Exception(f"Azure TTS failed: {result.reason}")
+	
+	return output_path
+
+
+def _generate_speech_gtts(text: str, slow: bool = False, output_path: str = None) -> str:
+	"""
+	Generate speech using gTTS (fallback).
+	
+	Args:
+		text: Text to convert to speech
+		slow: Whether to use slow speech
+		output_path: Path to save audio file
+	
+	Returns:
+		Path to generated audio file
+	"""
+	if not output_path:
+		output_path = os.path.join(TEMP_AUDIO_DIR, f"gtts_{uuid.uuid4()}.mp3")
+	
+	tts = gTTS(text=text, lang="sq", slow=slow)
+	tts.save(output_path)
+	
+	return output_path
+
 
 @router.post("/text-to-speech")
-async def text_to_speech(text: str, language: str = "sq"):
+async def text_to_speech(
+	text: str,
+	language: str = "sq",
+	voice: Literal["anila", "ilir", "default"] = "anila",
+	rate: str = "+0%",
+	pitch: str = "+0Hz",
+	slow: bool = False
+):
 	"""
-	Convert text to speech using Google Text-to-Speech
-	Language codes: 'sq' for Albanian, 'en' for English
+	Convert text to speech using Azure TTS (preferred) or gTTS (fallback).
+	
+	Albanian Voices (Azure):
+	- anila: sq-AL-AnilaNeural (female, warm and clear - recommended for kids)
+	- ilir: sq-AL-IlirNeural (male, authoritative)
+	- default: falls back to gTTS
+	
+	Parameters:
+	- rate: Speed adjustment (e.g., "+0%", "-10%" for slower, "+20%" for faster)
+	- pitch: Pitch adjustment (e.g., "+0Hz", "-2Hz", "+5Hz")
+	- slow: For gTTS fallback only
 	"""
 	try:
-		# Create unique filename
 		filename = f"tts_{uuid.uuid4()}.mp3"
 		filepath = os.path.join(TEMP_AUDIO_DIR, filename)
 		
-		# Generate speech
-		tts = gTTS(text=text, lang=language, slow=False)
-		tts.save(filepath)
+		# Try Azure TTS if available and Albanian is requested
+		if AZURE_AVAILABLE and language == "sq" and voice in ["anila", "ilir"]:
+			voice_map = {
+				"anila": "sq-AL-AnilaNeural",
+				"ilir": "sq-AL-IlirNeural"
+			}
+			try:
+				filepath = _generate_speech_azure(
+					text=text,
+					voice_name=voice_map[voice],
+					rate=rate,
+					pitch=pitch,
+					output_path=filepath
+				)
+				return FileResponse(
+					filepath,
+					media_type="audio/mpeg",
+					filename=f"speech_azure_{voice}.mp3",
+					headers={"X-TTS-Engine": "Azure Neural"}
+				)
+			except Exception as azure_err:
+				print(f"[WARNING] Azure TTS failed, falling back to gTTS: {azure_err}")
 		
-		# Return audio file
+		# Fallback to gTTS
+		filepath = _generate_speech_gtts(text=text, slow=slow, output_path=filepath)
+		
 		return FileResponse(
-			filepath, 
+			filepath,
 			media_type="audio/mpeg",
-			filename=f"speech_{language}.mp3"
+			filename=f"speech_{language}.mp3",
+			headers={"X-TTS-Engine": "gTTS"}
 		)
 		
 	except Exception as e:
@@ -155,10 +280,23 @@ def get_pronunciation_feedback(similarity: float, spoken: str, target: str) -> s
 
 
 @router.get("/audio-exercises/{exercise_id}")
-async def get_audio_exercise(exercise_id: int, slow: bool = True):
+async def get_audio_exercise(
+	exercise_id: int,
+	slow: bool = True,
+	voice: Literal["anila", "ilir", "default"] = "anila"
+):
 	"""
-	Get audio version of an exercise for listening practice
-	Supports Albanian corpus exercises with proper pronunciation
+	Get audio version of an exercise for listening practice.
+	Uses Azure TTS Neural Voices for professional, natural Albanian pronunciation.
+	
+	Features:
+	- Audio caching (reuses existing files)
+	- Validates text exists before generation
+	- Fast response for cached files
+	
+	Parameters:
+	- slow: Adjust speech rate (Azure: -15% rate, gTTS: slow=True)
+	- voice: "anila" (female, kid-friendly), "ilir" (male), or "default" (gTTS)
 	"""
 	try:
 		from ..database import get_db
@@ -185,21 +323,82 @@ async def get_audio_exercise(exercise_id: int, slow: bool = True):
 		if not exercise_text:
 			exercise_text = exercise.answer
 		
-		# Generate speech with Albanian pronunciation
-		filename = f"exercise_{exercise_id}_{uuid.uuid4()}.mp3"
-		filepath = os.path.join(TEMP_AUDIO_DIR, filename)
+		# Validate text exists
+		if not exercise_text or not exercise_text.strip():
+			print(f"[ERROR] Exercise {exercise_id} has no text for audio (answer: {exercise.answer}, data: {exercise.data})")
+			raise HTTPException(
+				status_code=400,
+				detail=f"Exercise {exercise_id} has no text to generate audio. Please check exercise data."
+			)
 		
-		# Use slower speech for dictation exercises
-		tts = gTTS(text=exercise_text, lang="sq", slow=slow)
-		tts.save(filepath)
+		exercise_text = exercise_text.strip()
+		
+		# Check for cached audio file (deterministic filename)
+		engine_suffix = "azure" if (AZURE_AVAILABLE and voice in ["anila", "ilir"]) else "gtts"
+		rate_suffix = "slow" if slow else "normal"
+		cached_filename = f"exercise_{exercise_id}_{voice}_{rate_suffix}_{engine_suffix}.mp3"
+		cached_filepath = os.path.join(TEMP_AUDIO_DIR, cached_filename)
+		
+		# Return cached file if exists and is recent (< 24 hours old)
+		if os.path.exists(cached_filepath):
+			file_age_seconds = time.time() - os.path.getmtime(cached_filepath)
+			if file_age_seconds < 86400:  # 24 hours
+				print(f"[INFO] Serving cached audio for exercise {exercise_id}")
+				return FileResponse(
+					cached_filepath,
+					media_type="audio/mpeg",
+					filename=f"exercise_{exercise_id}.mp3",
+					headers={"X-TTS-Engine": f"{engine_suffix}-cached"}
+				)
+			else:
+				# Remove old cached file
+				try:
+					os.remove(cached_filepath)
+				except:
+					pass
+		
+		# Generate new audio
+		print(f"[INFO] Generating new audio for exercise {exercise_id}: '{exercise_text[:50]}...'")
+		
+		# Try Azure TTS for Albanian
+		if AZURE_AVAILABLE and voice in ["anila", "ilir"]:
+			voice_map = {
+				"anila": "sq-AL-AnilaNeural",
+				"ilir": "sq-AL-IlirNeural"
+			}
+			rate = "-15%" if slow else "+0%"  # Slower for dictation
+			
+			try:
+				filepath = _generate_speech_azure(
+					text=exercise_text,
+					voice_name=voice_map[voice],
+					rate=rate,
+					pitch="+0Hz",
+					output_path=cached_filepath
+				)
+				return FileResponse(
+					filepath,
+					media_type="audio/mpeg",
+					filename=f"exercise_{exercise_id}.mp3",
+					headers={"X-TTS-Engine": "Azure Neural"}
+				)
+			except Exception as azure_err:
+				print(f"[WARNING] Azure TTS failed for exercise {exercise_id}, falling back to gTTS: {azure_err}")
+		
+		# Fallback to gTTS
+		filepath = _generate_speech_gtts(text=exercise_text, slow=slow, output_path=cached_filepath)
 		
 		return FileResponse(
 			filepath,
 			media_type="audio/mpeg",
-			filename=f"exercise_{exercise_id}.mp3"
+			filename=f"exercise_{exercise_id}.mp3",
+			headers={"X-TTS-Engine": "gTTS"}
 		)
 		
+	except HTTPException:
+		raise
 	except Exception as e:
+		print(f"[ERROR] Audio generation failed for exercise {exercise_id}: {str(e)}")
 		raise HTTPException(status_code=500, detail=f"Audio exercise generation failed: {str(e)}")
 
 

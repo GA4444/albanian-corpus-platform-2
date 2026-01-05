@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine
-from .routers import exercises, progress, seed, auth, ai, audio, course_progression, database_viewer, leaderboard, admin
+from .routers import exercises, progress, seed, auth, ai, audio, course_progression, database_viewer, leaderboard, admin, ocr, gamification, chatbot, chatbot_advanced
 
 
 def create_app() -> FastAPI:
@@ -32,6 +32,10 @@ def create_app() -> FastAPI:
 	app.include_router(ai.router, prefix="/api", tags=["ai"])
 	app.include_router(audio.router, prefix="/api", tags=["audio"])
 	app.include_router(course_progression.router, prefix="/api", tags=["course-progression"])
+	app.include_router(ocr.router, prefix="/api", tags=["ocr"])
+	app.include_router(gamification.router, prefix="/api", tags=["gamification"])
+	app.include_router(chatbot.router, prefix="/api", tags=["chatbot"])
+	app.include_router(chatbot_advanced.router, prefix="/api", tags=["chatbot-advanced"])
 	app.include_router(database_viewer.router, tags=["database-viewer"])
 	app.include_router(leaderboard.router, prefix="/api", tags=["leaderboard"])
 	app.include_router(admin.router, prefix="/api/admin", tags=["admin"])

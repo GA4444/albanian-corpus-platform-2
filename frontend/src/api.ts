@@ -117,10 +117,75 @@ export interface ClassData {
 	description: string
 	order_index: number
 	enabled: boolean
-	courses: CourseOut[]
+	courses?: CourseOut[]  // Optional: not always loaded from API
 	unlocked: boolean
 	completed: boolean
 	progress_percent?: number
+}
+
+export interface OCRAnalysisResponse {
+	extracted_text: string
+	errors: {
+		position: number
+		expected: string
+		recognized: string
+	}[]
+	suggestions: string[]
+	issues?: {
+		position: number
+		token: string
+		type: string
+		source?: 'ocr' | 'orthography'
+		severity?: 'info' | 'warning' | 'error'
+		likelihood?: number
+		message: string
+		expected?: string | null
+		recognized?: string | null
+		suggestions: string[]
+		ocr_confidence?: number | null
+	}[]
+	meta?: Record<string, any>
+}
+
+export interface PersonalizedPracticeRequest {
+	user_id: string
+	class_id: number
+	level_id: number
+}
+
+export interface AIPracticeExercise {
+	id: string
+	prompt: string
+	answer: string
+	category: Category | 'spelling'
+	hint?: string
+	order_index: number
+}
+
+export interface PersonalizedPracticeResponse {
+	exercises: AIPracticeExercise[]
+	message: string
+}
+
+export interface AICoachRequest {
+	user_id: string
+	level_id?: number | null
+}
+
+export interface AICoachMistakePattern {
+	type: string
+	count: number
+	examples: string[]
+}
+
+export interface AICoachResponse {
+	user_id: string
+	level_id?: number | null
+	total_attempts_analyzed: number
+	incorrect_attempts_analyzed: number
+	patterns: AICoachMistakePattern[]
+	micro_lessons: string[]
+	drill_plan: string[]
 }
 
 const client = axios.create({ baseURL: '' })
@@ -196,6 +261,25 @@ export async function getAdaptiveDifficulty(userId: string) {
 
 export async function getLearningPath(userId: string) {
 	const { data } = await client.get(`/api/ai/learning-path/${userId}`)
+	return data
+}
+
+export async function fetchAIPersonalizedPractice(body: PersonalizedPracticeRequest) {
+	const { data } = await client.post<PersonalizedPracticeResponse>('/api/ai/personalized-practice', body)
+	return data
+}
+
+export async function fetchAICoach(body: AICoachRequest) {
+	const { data } = await client.post<AICoachResponse>('/api/ai/coach', body)
+	return data
+}
+
+export async function analyzeOCR(formData: FormData) {
+	const { data } = await client.post<OCRAnalysisResponse>('/api/ocr/analyze', formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data'
+		}
+	})
 	return data
 }
 
@@ -275,7 +359,8 @@ export interface LeaderboardEntry {
 	level: number
 }
 
-export async function getLeaderboard(limit: number = 50) {
+export async function getLeaderboard(limit: number = 0) {
+	// limit=0 -> fetch all users
 	const { data } = await client.get<LeaderboardEntry[]>(`/api/leaderboard?limit=${limit}`)
 	return data
 }
@@ -404,5 +489,174 @@ export async function updateExercise(userId: number, exerciseId: number, exercis
 
 export async function deleteExercise(userId: number, exerciseId: number) {
 	const { data } = await client.delete(`/api/admin/exercises/${exerciseId}?user_id=${userId}`)
+	return data
+}
+
+// ============================================================================
+// GAMIFICATION API
+// ============================================================================
+
+export interface Achievement {
+	id: number
+	code: string
+	name: string
+	description: string | null
+	icon: string | null
+	category: string | null
+	requirement_value: number | null
+	points_reward: number
+}
+
+export interface UserAchievement extends Achievement {
+	earned_at: string
+}
+
+export interface UserAchievementsResponse {
+	total_achievements: number
+	achievements: UserAchievement[]
+}
+
+export interface StreakData {
+	current_streak: number
+	longest_streak: number
+	last_activity_date: string | null
+}
+
+export interface DailyChallenge {
+	id: number
+	date: string
+	challenge_type: string
+	target_value: number | null
+	description: string
+	points_reward: number
+	level_id: number | null
+	user_progress?: {
+		current_value: number
+		completed: boolean
+		completed_at: string | null
+	}
+}
+
+export interface SRSCard {
+	id: number
+	exercise_id: number
+	word: string
+	next_review_date: string
+	ease_factor: number
+	interval_days: number
+	total_reviews: number
+	correct_reviews: number
+}
+
+export interface SRSDueCardsResponse {
+	due_count: number
+	cards: SRSCard[]
+}
+
+export interface SRSStatsResponse {
+	total_cards: number
+	due_cards: number
+	total_reviews: number
+	correct_reviews: number
+	accuracy: number
+}
+
+export interface SRSReviewResponse {
+	card_id: number
+	next_review_date: string
+	interval_days: number
+	ease_factor: number
+	repetitions: number
+}
+
+// Get all possible achievements
+export async function getAllAchievements() {
+	const { data } = await client.get<Achievement[]>('/api/gamification/achievements')
+	return data
+}
+
+// Get user's earned achievements
+export async function getUserAchievements(userId: string) {
+	const { data } = await client.get<UserAchievementsResponse>(`/api/gamification/achievements/${userId}`)
+	return data
+}
+
+// Get user's streak data
+export async function getUserStreak(userId: string) {
+	const { data } = await client.get<StreakData>(`/api/gamification/streak/${userId}`)
+	return data
+}
+
+// Get today's daily challenge
+export async function getDailyChallenge(userId?: string) {
+	const url = userId ? `/api/gamification/daily-challenge?user_id=${userId}` : '/api/gamification/daily-challenge'
+	const { data } = await client.get<DailyChallenge>(url)
+	return data
+}
+
+// Get SRS cards due for review
+export async function getDueSRSCards(userId: string, limit: number = 10) {
+	const { data } = await client.get<SRSDueCardsResponse>(`/api/gamification/srs/due/${userId}?limit=${limit}`)
+	return data
+}
+
+// Review an SRS card
+export async function reviewSRSCard(cardId: number, quality: number) {
+	const { data } = await client.post<SRSReviewResponse>('/api/gamification/srs/review', { card_id: cardId, quality })
+	return data
+}
+
+// Get SRS statistics
+export async function getSRSStats(userId: string) {
+	const { data } = await client.get<SRSStatsResponse>(`/api/gamification/srs/stats/${userId}`)
+	return data
+}
+
+// ============================================================================
+// CHATBOT API
+// ============================================================================
+
+export interface ChatMessage {
+	message: string
+	user_id?: string
+	context?: Record<string, any>
+}
+
+export interface ChatResponse {
+	response: string
+	suggestions?: string[]
+	related_topics?: string[]
+	timestamp: string
+}
+
+export interface ChatTopic {
+	title: string
+	icon: string
+	questions: string[]
+}
+
+export interface ChatTopicsResponse {
+	topics: ChatTopic[]
+}
+
+export interface ChatSuggestionsResponse {
+	suggestions: string[]
+}
+
+// Ask chatbot a question
+export async function askChatbot(message: ChatMessage) {
+	const { data } = await client.post<ChatResponse>('/api/chatbot/ask', message)
+	return data
+}
+
+// Get quick suggestions
+export async function getChatSuggestions() {
+	const { data } = await client.get<ChatSuggestionsResponse>('/api/chatbot/suggestions')
+	return data
+}
+
+// Get available topics
+export async function getChatTopics() {
+	const { data } = await client.get<ChatTopicsResponse>('/api/chatbot/topics')
 	return data
 }

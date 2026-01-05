@@ -487,9 +487,9 @@ def seed_first_class_exercises(db: Session):
     abstract_concrete_exercises = [
         # Konkrete
         ("trishtim / libër / baba → libër (konkret)", "libër", ["trishtim", "libër", "baba"], "concrete"),
-        ("gëzim / lumturi / derë → derë (konkret)", "derë", ["gëzim", "lumturi", "derë"], "concrete"),
+        ("gëzim / lumturi / kopsht → kopsht (konkret)", "kopsht", ["gëzim", "lumturi", "kopsht"], "concrete"),
         ("mendim / guxim / top → top (konkret)", "top", ["mendim", "guxim", "top"], "concrete"),
-        ("dashuri / frikë / karrige → karrige (konkret)", "karrige", ["dashuri", "frikë", "karrige"], "concrete"),
+        ("dashuri / frikë / fletore → fletore (konkret)", "fletore", ["dashuri", "frikë", "fletore"], "concrete"),
         ("frikë / laps / dritare → laps (konkret)", "laps", ["frikë", "laps", "dritare"], "concrete"),
         # Abstrakte
         ("lumturi / top / laps → lumturi (abstrakte)", "lumturi", ["lumturi", "top", "laps"], "abstract"),

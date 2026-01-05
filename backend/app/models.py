@@ -155,5 +155,158 @@ class User(Base):
 	is_active = Column(Boolean, default=True)
 	is_admin = Column(Boolean, default=False, nullable=False)
 	password_hash = Column(String(255), nullable=False)
+	
+	# Gamification fields
+	current_streak = Column(Integer, default=0, nullable=False)
+	longest_streak = Column(Integer, default=0, nullable=False)
+	last_activity_date = Column(DateTime, nullable=True)
+	total_achievements = Column(Integer, default=0, nullable=False)
+
+
+class Achievement(Base):
+	"""Achievements/Badges that users can earn"""
+	__tablename__ = "achievements"
+	
+	id = Column(Integer, primary_key=True, index=True)
+	code = Column(String(50), unique=True, index=True, nullable=False)  # e.g., "first_perfect_score", "week_streak"
+	name = Column(String(100), nullable=False)
+	description = Column(Text, nullable=True)
+	icon = Column(String(10), nullable=True)  # Emoji icon
+	category = Column(String(50), nullable=True)  # "streak", "accuracy", "progress", "special"
+	requirement_value = Column(Integer, nullable=True)  # e.g., 7 for "7-day streak"
+	points_reward = Column(Integer, default=0, nullable=False)
+	created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class UserAchievement(Base):
+	"""Track which achievements users have earned"""
+	__tablename__ = "user_achievements"
+	
+	id = Column(Integer, primary_key=True, index=True)
+	user_id = Column(String(50), ForeignKey("users.id"), nullable=False, index=True)
+	achievement_id = Column(Integer, ForeignKey("achievements.id"), nullable=False)
+	earned_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+	
+	# Relationships
+	user = relationship("User")
+	achievement = relationship("Achievement")
+	
+	__table_args__ = (UniqueConstraint('user_id', 'achievement_id', name='unique_user_achievement'),)
+
+
+class DailyChallenge(Base):
+	"""Daily challenges for users"""
+	__tablename__ = "daily_challenges"
+	
+	id = Column(Integer, primary_key=True, index=True)
+	date = Column(String(10), nullable=False, index=True)  # YYYY-MM-DD format
+	challenge_type = Column(String(50), nullable=False)  # "complete_n_exercises", "perfect_accuracy", "specific_level"
+	target_value = Column(Integer, nullable=True)  # e.g., 10 for "complete 10 exercises"
+	level_id = Column(Integer, ForeignKey("levels.id"), nullable=True)  # For level-specific challenges
+	points_reward = Column(Integer, default=50, nullable=False)
+	description = Column(Text, nullable=False)
+	created_at = Column(DateTime, default=datetime.utcnow)
+	
+	# Relationships
+	level = relationship("Level")
+
+
+class UserDailyProgress(Base):
+	"""Track user progress on daily challenges"""
+	__tablename__ = "user_daily_progress"
+	
+	id = Column(Integer, primary_key=True, index=True)
+	user_id = Column(String(50), ForeignKey("users.id"), nullable=False, index=True)
+	challenge_id = Column(Integer, ForeignKey("daily_challenges.id"), nullable=False)
+	current_value = Column(Integer, default=0, nullable=False)  # Current progress toward target
+	completed = Column(Boolean, default=False, nullable=False)
+	completed_at = Column(DateTime, nullable=True)
+	
+	# Relationships
+	user = relationship("User")
+	challenge = relationship("DailyChallenge")
+	
+	__table_args__ = (UniqueConstraint('user_id', 'challenge_id', name='unique_user_daily_challenge'),)
+
+
+class SpacedRepetitionCard(Base):
+	"""SRS cards for words/exercises the user struggles with"""
+	__tablename__ = "srs_cards"
+	
+	id = Column(Integer, primary_key=True, index=True)
+	user_id = Column(String(50), ForeignKey("users.id"), nullable=False, index=True)
+	exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=False)
+	word = Column(String(200), nullable=False)  # The word being practiced
+	
+	# SRS algorithm fields (SM-2 inspired)
+	ease_factor = Column(Float, default=2.5, nullable=False)  # How "easy" the card is (2.5 is default)
+	interval_days = Column(Integer, default=1, nullable=False)  # Days until next review
+	repetitions = Column(Integer, default=0, nullable=False)  # Number of successful repetitions
+	
+	# Scheduling
+	next_review_date = Column(DateTime, nullable=False, index=True)
+	last_reviewed_at = Column(DateTime, nullable=True)
+	
+	# Stats
+	total_reviews = Column(Integer, default=0, nullable=False)
+	correct_reviews = Column(Integer, default=0, nullable=False)
+	
+	created_at = Column(DateTime, default=datetime.utcnow)
+	
+	# Relationships
+	user = relationship("User")
+	exercise = relationship("Exercise")
+	
+	__table_args__ = (UniqueConstraint('user_id', 'exercise_id', name='unique_user_srs_card'),)
+
+
+class ChatSession(Base):
+	"""Chat sessions for AI Chatbot"""
+	__tablename__ = "chat_sessions"
+	
+	id = Column(Integer, primary_key=True, index=True)
+	user_id = Column(String(50), ForeignKey("users.id"), nullable=True, index=True)  # Null for anonymous
+	session_token = Column(String(100), unique=True, nullable=False, index=True)
+	started_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+	last_activity = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+	ended_at = Column(DateTime, nullable=True)
+	is_active = Column(Boolean, default=True, nullable=False)
+	
+	# Session metadata
+	total_messages = Column(Integer, default=0, nullable=False)
+	user_satisfaction = Column(Integer, nullable=True)  # 1-5 rating
+	
+	# Relationships
+	user = relationship("User")
+	messages = relationship("ChatMessage", back_populates="session", order_by="ChatMessage.created_at")
+
+
+class ChatMessage(Base):
+	"""Individual messages in chat sessions"""
+	__tablename__ = "chat_messages"
+	
+	id = Column(Integer, primary_key=True, index=True)
+	session_id = Column(Integer, ForeignKey("chat_sessions.id"), nullable=False, index=True)
+	role = Column(String(20), nullable=False)  # 'user' or 'assistant'
+	content = Column(Text, nullable=False)
+	
+	# LLM metadata
+	model_used = Column(String(50), nullable=True)  # e.g., "gpt-4", "claude-3", "local"
+	tokens_used = Column(Integer, nullable=True)
+	response_time_ms = Column(Integer, nullable=True)
+	
+	# Context
+	context_data = Column(Text, nullable=True)  # JSON-encoded context
+	
+	# Generated content
+	suggested_questions = Column(Text, nullable=True)  # JSON array
+	generated_exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=True)
+	
+	created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+	
+	# Relationships
+	session = relationship("ChatSession", back_populates="messages")
+	generated_exercise = relationship("Exercise")
+
 
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, cast, String, case
 from typing import List
 from ..database import get_db
 from .. import models
@@ -23,79 +23,82 @@ class LeaderboardEntry(BaseModel):
         from_attributes = True
 
 @router.get("/leaderboard", response_model=List[LeaderboardEntry])
-def get_leaderboard(db: Session = Depends(get_db), limit: int = 50):
-    """Get leaderboard with top users ranked by total points"""
+def get_leaderboard(db: Session = Depends(get_db), limit: int = 0):
+    """
+    Get leaderboard with top users ranked by total points.
+    OPTIMIZED: Uses a single query with subqueries instead of N+1 queries.
+    limit=0 (default) -> returns all users; set a positive number to limit.
+    """
     
-    # Get all users with their statistics
-    users = db.query(models.User).all()
-    leaderboard_data = []
-    
-    for user in users:
-        # Calculate total points from attempts
-        total_points_result = db.query(func.sum(models.Attempt.score_delta)).filter(
-            and_(
-                models.Attempt.user_id == str(user.id),
-                models.Attempt.score_delta > 0
-            )
-        ).scalar()
-        total_points = int(total_points_result) if total_points_result else 0
-        
-        # Calculate total attempts and correct answers
-        total_attempts = db.query(func.count(models.Attempt.id)).filter(
-            models.Attempt.user_id == str(user.id)
-        ).scalar() or 0
-        
-        total_correct = db.query(func.count(models.Attempt.id)).filter(
-            and_(
-                models.Attempt.user_id == str(user.id),
-                models.Attempt.is_correct == True
-            )
-        ).scalar() or 0
-        
-        # Calculate accuracy
-        accuracy = (total_correct / total_attempts * 100) if total_attempts > 0 else 0.0
-        
-        # Count completed courses
-        completed_courses = db.query(func.count(models.CourseProgress.id)).filter(
-            and_(
-                models.CourseProgress.user_id == user.id,
-                models.CourseProgress.is_completed == True
-            )
-        ).scalar() or 0
-        
-        # Calculate level based on points (similar to frontend logic)
-        level = (total_points // 100) + 1
-        
-        leaderboard_data.append({
-            'user_id': user.id,
-            'username': user.username,
-            'total_points': total_points,
-            'total_correct': total_correct,
-            'total_attempts': total_attempts,
-            'accuracy': round(accuracy, 1),
-            'completed_courses': completed_courses,
-            'level': level
-        })
-    
-    # Sort by total points (descending), then by accuracy, then by completed courses
-    leaderboard_data.sort(
-        key=lambda x: (x['total_points'], x['accuracy'], x['completed_courses']),
-        reverse=True
+    # Subquery for user statistics from attempts (total points, attempts, correct)
+    attempts_stats = (
+        db.query(
+            models.Attempt.user_id,
+            func.sum(case((models.Attempt.score_delta > 0, models.Attempt.score_delta), else_=0)).label('total_points'),
+            func.count(models.Attempt.id).label('total_attempts'),
+            func.sum(case((models.Attempt.is_correct == True, 1), else_=0)).label('total_correct')
+        )
+        .group_by(models.Attempt.user_id)
+        .subquery()
     )
     
-    # Add rank and limit results
+    # Subquery for completed courses
+    completed_courses_subq = (
+        db.query(
+            models.CourseProgress.user_id,
+            func.count(models.CourseProgress.id).label('completed_courses')
+        )
+        .filter(models.CourseProgress.is_completed == True)
+        .group_by(models.CourseProgress.user_id)
+        .subquery()
+    )
+    
+    # Main query: Join users with their stats
+    leaderboard_query = (
+        db.query(
+            models.User.id.label('user_id'),
+            models.User.username,
+            func.coalesce(attempts_stats.c.total_points, 0).label('total_points'),
+            func.coalesce(attempts_stats.c.total_attempts, 0).label('total_attempts'),
+            func.coalesce(attempts_stats.c.total_correct, 0).label('total_correct'),
+            func.coalesce(completed_courses_subq.c.completed_courses, 0).label('completed_courses')
+        )
+        # Cast user.id (int) to string to match Attempt.user_id / CourseProgress.user_id types
+        .outerjoin(attempts_stats, cast(models.User.id, String) == attempts_stats.c.user_id)
+        .outerjoin(completed_courses_subq, cast(models.User.id, String) == completed_courses_subq.c.user_id)
+        .order_by(
+            func.coalesce(attempts_stats.c.total_points, 0).desc(),
+            (func.coalesce(attempts_stats.c.total_correct, 0) * 100.0 / func.nullif(func.coalesce(attempts_stats.c.total_attempts, 1), 0)).desc(),
+            func.coalesce(completed_courses_subq.c.completed_courses, 0).desc()
+        )
+    )
+
+    if limit and limit > 0:
+        leaderboard_query = leaderboard_query.limit(limit)
+
+    leaderboard_rows = leaderboard_query.all()
+    
+    # Build results
     result = []
-    for idx, entry in enumerate(leaderboard_data[:limit], start=1):
+    for idx, row in enumerate(leaderboard_rows, start=1):
+        total_points = int(row.total_points)
+        total_attempts = int(row.total_attempts)
+        total_correct = int(row.total_correct)
+        completed_courses = int(row.completed_courses)
+        
+        accuracy = (total_correct / total_attempts * 100) if total_attempts > 0 else 0.0
+        level = (total_points // 100) + 1
+        
         result.append(LeaderboardEntry(
             rank=idx,
-            user_id=entry['user_id'],
-            username=entry['username'],
-            total_points=entry['total_points'],
-            total_correct=entry['total_correct'],
-            total_attempts=entry['total_attempts'],
-            accuracy=entry['accuracy'],
-            completed_courses=entry['completed_courses'],
-            level=entry['level']
+            user_id=row.user_id,
+            username=row.username,
+            total_points=total_points,
+            total_correct=total_correct,
+            total_attempts=total_attempts,
+            accuracy=round(accuracy, 1),
+            completed_courses=completed_courses,
+            level=level
         ))
     
     return result

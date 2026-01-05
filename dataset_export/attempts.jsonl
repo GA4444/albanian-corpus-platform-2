@@ -1,0 +1,417 @@
+{"id": 1, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 10}
+{"id": 2, "user_id": "07a7514ac1eeece0", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 10}
+{"id": 3, "user_id": "07a7514ac1eeece0", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 10}
+{"id": 4, "user_id": "07a7514ac1eeece0", "exercise_id": 4, "response": "Këngë", "is_correct": true, "score_delta": 10}
+{"id": 5, "user_id": "07a7514ac1eeece0", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 10}
+{"id": 6, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "z", "is_correct": false, "score_delta": 0}
+{"id": 7, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "z", "is_correct": false, "score_delta": 0}
+{"id": 8, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "z", "is_correct": false, "score_delta": 0}
+{"id": 9, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 10}
+{"id": 10, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 10}
+{"id": 11, "user_id": "07a7514ac1eeece0", "exercise_id": 7, "response": "mësuesi", "is_correct": true, "score_delta": 10}
+{"id": 12, "user_id": "07a7514ac1eeece0", "exercise_id": 8, "response": "e kuqe", "is_correct": true, "score_delta": 10}
+{"id": 13, "user_id": "07a7514ac1eeece0", "exercise_id": 9, "response": "çadra", "is_correct": true, "score_delta": 10}
+{"id": 14, "user_id": "07a7514ac1eeece0", "exercise_id": 10, "response": "karrige", "is_correct": true, "score_delta": 10}
+{"id": 15, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 16, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 17, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 18, "user_id": "07a7514ac1eeece0", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 19, "user_id": "07a7514ac1eeece0", "exercise_id": 12, "response": "i shkurtë", "is_correct": false, "score_delta": 0}
+{"id": 20, "user_id": "07a7514ac1eeece0", "exercise_id": 12, "response": "i shkurt", "is_correct": false, "score_delta": 0}
+{"id": 21, "user_id": "07a7514ac1eeece0", "exercise_id": 12, "response": "i shkurtër", "is_correct": true, "score_delta": 1}
+{"id": 22, "user_id": "07a7514ac1eeece0", "exercise_id": 13, "response": "i trishtuar", "is_correct": true, "score_delta": 1}
+{"id": 23, "user_id": "07a7514ac1eeece0", "exercise_id": 14, "response": "i nxehtë", "is_correct": true, "score_delta": 1}
+{"id": 24, "user_id": "07a7514ac1eeece0", "exercise_id": 15, "response": "i ngadaltë", "is_correct": true, "score_delta": 1}
+{"id": 25, "user_id": "07a7514ac1eeece0", "exercise_id": 16, "response": "i gëzuar", "is_correct": true, "score_delta": 1}
+{"id": 26, "user_id": "07a7514ac1eeece0", "exercise_id": 17, "response": "i hijshëm", "is_correct": true, "score_delta": 1}
+{"id": 27, "user_id": "07a7514ac1eeece0", "exercise_id": 17, "response": "i hijshëm", "is_correct": true, "score_delta": 1}
+{"id": 28, "user_id": "07a7514ac1eeece0", "exercise_id": 18, "response": "i zgjuar", "is_correct": true, "score_delta": 1}
+{"id": 29, "user_id": "07a7514ac1eeece0", "exercise_id": 19, "response": "i heshtur", "is_correct": true, "score_delta": 1}
+{"id": 30, "user_id": "07a7514ac1eeece0", "exercise_id": 20, "response": "trim", "is_correct": true, "score_delta": 1}
+{"id": 31, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 32, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 33, "user_id": "07a7514ac1eeece0", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 34, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 35, "user_id": "07a7514ac1eeece0", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 36, "user_id": "07a7514ac1eeece0", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 37, "user_id": "07a7514ac1eeece0", "exercise_id": 21, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 38, "user_id": "07a7514ac1eeece0", "exercise_id": 22, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 39, "user_id": "07a7514ac1eeece0", "exercise_id": 23, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 40, "user_id": "07a7514ac1eeece0", "exercise_id": 24, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 41, "user_id": "07a7514ac1eeece0", "exercise_id": 25, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 42, "user_id": "07a7514ac1eeece0", "exercise_id": 26, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 43, "user_id": "07a7514ac1eeece0", "exercise_id": 27, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 44, "user_id": "07a7514ac1eeece0", "exercise_id": 28, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 45, "user_id": "07a7514ac1eeece0", "exercise_id": 29, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 46, "user_id": "07a7514ac1eeece0", "exercise_id": 30, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 47, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 48, "user_id": "478b10a45695855e", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 49, "user_id": "478b10a45695855e", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 50, "user_id": "478b10a45695855e", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 1}
+{"id": 51, "user_id": "478b10a45695855e", "exercise_id": 4, "response": "këngë", "is_correct": true, "score_delta": 1}
+{"id": 52, "user_id": "478b10a45695855e", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 1}
+{"id": 53, "user_id": "bd1c71129f4fe477", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 54, "user_id": "bd1c71129f4fe477", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 55, "user_id": "bd1c71129f4fe477", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 1}
+{"id": 56, "user_id": "bd1c71129f4fe477", "exercise_id": 4, "response": "këngë", "is_correct": true, "score_delta": 1}
+{"id": 57, "user_id": "bd1c71129f4fe477", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 1}
+{"id": 58, "user_id": "bd1c71129f4fe477", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 59, "user_id": "bd1c71129f4fe477", "exercise_id": 7, "response": "mësuesi", "is_correct": true, "score_delta": 1}
+{"id": 60, "user_id": "bd1c71129f4fe477", "exercise_id": 8, "response": "e kuqe", "is_correct": true, "score_delta": 1}
+{"id": 61, "user_id": "bd1c71129f4fe477", "exercise_id": 9, "response": "çadra", "is_correct": true, "score_delta": 1}
+{"id": 62, "user_id": "bd1c71129f4fe477", "exercise_id": 10, "response": "karrige", "is_correct": true, "score_delta": 1}
+{"id": 63, "user_id": "bd1c71129f4fe477", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 64, "user_id": "bd1c71129f4fe477", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 65, "user_id": "bd1c71129f4fe477", "exercise_id": 12, "response": "i shkurtë", "is_correct": false, "score_delta": 0}
+{"id": 66, "user_id": "bd1c71129f4fe477", "exercise_id": 12, "response": "i shkurtë", "is_correct": false, "score_delta": 0}
+{"id": 67, "user_id": "bd1c71129f4fe477", "exercise_id": 12, "response": "i shkurtër", "is_correct": true, "score_delta": 1}
+{"id": 68, "user_id": "bd1c71129f4fe477", "exercise_id": 13, "response": "i mërzitur", "is_correct": false, "score_delta": 0}
+{"id": 69, "user_id": "bd1c71129f4fe477", "exercise_id": 13, "response": "i trishtuar", "is_correct": true, "score_delta": 1}
+{"id": 70, "user_id": "bd1c71129f4fe477", "exercise_id": 14, "response": "i nxehtë", "is_correct": true, "score_delta": 1}
+{"id": 71, "user_id": "bd1c71129f4fe477", "exercise_id": 15, "response": "i ngadaltë", "is_correct": true, "score_delta": 1}
+{"id": 72, "user_id": "bd1c71129f4fe477", "exercise_id": 17, "response": "i shëmtuar", "is_correct": false, "score_delta": 0}
+{"id": 73, "user_id": "bd1c71129f4fe477", "exercise_id": 17, "response": "i shëmtuarë", "is_correct": false, "score_delta": 0}
+{"id": 74, "user_id": "07a7514ac1eeece0", "exercise_id": 31, "response": "gjysh", "is_correct": true, "score_delta": 1}
+{"id": 75, "user_id": "07a7514ac1eeece0", "exercise_id": 32, "response": "fshat", "is_correct": true, "score_delta": 1}
+{"id": 76, "user_id": "07a7514ac1eeece0", "exercise_id": 33, "response": "zog", "is_correct": true, "score_delta": 1}
+{"id": 77, "user_id": "07a7514ac1eeece0", "exercise_id": 34, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 78, "user_id": "07a7514ac1eeece0", "exercise_id": 35, "response": "baba", "is_correct": true, "score_delta": 1}
+{"id": 79, "user_id": "07a7514ac1eeece0", "exercise_id": 36, "response": "nënë", "is_correct": true, "score_delta": 1}
+{"id": 80, "user_id": "07a7514ac1eeece0", "exercise_id": 37, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 81, "user_id": "07a7514ac1eeece0", "exercise_id": 38, "response": "mal", "is_correct": true, "score_delta": 1}
+{"id": 82, "user_id": "07a7514ac1eeece0", "exercise_id": 39, "response": "mirë", "is_correct": true, "score_delta": 1}
+{"id": 83, "user_id": "07a7514ac1eeece0", "exercise_id": 40, "response": "makinë", "is_correct": true, "score_delta": 1}
+{"id": 84, "user_id": "07a7514ac1eeece0", "exercise_id": 41, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 85, "user_id": "07a7514ac1eeece0", "exercise_id": 42, "response": "kafshë", "is_correct": true, "score_delta": 1}
+{"id": 86, "user_id": "07a7514ac1eeece0", "exercise_id": 43, "response": "madh", "is_correct": true, "score_delta": 1}
+{"id": 87, "user_id": "07a7514ac1eeece0", "exercise_id": 44, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 88, "user_id": "07a7514ac1eeece0", "exercise_id": 45, "response": "naten", "is_correct": false, "score_delta": 0}
+{"id": 89, "user_id": "07a7514ac1eeece0", "exercise_id": 45, "response": "natën", "is_correct": true, "score_delta": 1}
+{"id": 90, "user_id": "07a7514ac1eeece0", "exercise_id": 46, "response": "ditën", "is_correct": true, "score_delta": 1}
+{"id": 91, "user_id": "07a7514ac1eeece0", "exercise_id": 47, "response": "qiell", "is_correct": true, "score_delta": 1}
+{"id": 92, "user_id": "07a7514ac1eeece0", "exercise_id": 48, "response": "lart", "is_correct": true, "score_delta": 1}
+{"id": 93, "user_id": "07a7514ac1eeece0", "exercise_id": 49, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 94, "user_id": "07a7514ac1eeece0", "exercise_id": 50, "response": "diell", "is_correct": true, "score_delta": 1}
+{"id": 95, "user_id": "07a7514ac1eeece0", "exercise_id": 51, "response": "lumë", "is_correct": true, "score_delta": 1}
+{"id": 96, "user_id": "07a7514ac1eeece0", "exercise_id": 52, "response": "zog", "is_correct": true, "score_delta": 1}
+{"id": 97, "user_id": "41e5e538fdf9a80a", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 98, "user_id": "41e5e538fdf9a80a", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 99, "user_id": "41e5e538fdf9a80a", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 1}
+{"id": 100, "user_id": "41e5e538fdf9a80a", "exercise_id": 4, "response": "Kënge", "is_correct": false, "score_delta": 0}
+{"id": 101, "user_id": "41e5e538fdf9a80a", "exercise_id": 4, "response": "Këngë", "is_correct": true, "score_delta": 1}
+{"id": 102, "user_id": "41e5e538fdf9a80a", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 1}
+{"id": 103, "user_id": "41e5e538fdf9a80a", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 104, "user_id": "41e5e538fdf9a80a", "exercise_id": 7, "response": "mësuesi", "is_correct": true, "score_delta": 1}
+{"id": 105, "user_id": "41e5e538fdf9a80a", "exercise_id": 8, "response": "e kuqe", "is_correct": true, "score_delta": 1}
+{"id": 106, "user_id": "41e5e538fdf9a80a", "exercise_id": 9, "response": "çadra", "is_correct": true, "score_delta": 1}
+{"id": 107, "user_id": "41e5e538fdf9a80a", "exercise_id": 10, "response": "karrige", "is_correct": true, "score_delta": 1}
+{"id": 108, "user_id": "41e5e538fdf9a80a", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 109, "user_id": "41e5e538fdf9a80a", "exercise_id": 12, "response": "keq", "is_correct": false, "score_delta": 0}
+{"id": 110, "user_id": "41e5e538fdf9a80a", "exercise_id": 12, "response": "i shkurtër", "is_correct": true, "score_delta": 1}
+{"id": 111, "user_id": "4376db0586f4400c", "exercise_id": 1, "response": "Zog", "is_correct": false, "score_delta": 0}
+{"id": 112, "user_id": "4376db0586f4400c", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 113, "user_id": "4376db0586f4400c", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 114, "user_id": "4376db0586f4400c", "exercise_id": 3, "response": "Drite", "is_correct": false, "score_delta": 0}
+{"id": 115, "user_id": "4376db0586f4400c", "exercise_id": 3, "response": "Drit", "is_correct": false, "score_delta": 0}
+{"id": 116, "user_id": "4376db0586f4400c", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 1}
+{"id": 117, "user_id": "4376db0586f4400c", "exercise_id": 4, "response": "Këngë", "is_correct": true, "score_delta": 1}
+{"id": 118, "user_id": "4376db0586f4400c", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 1}
+{"id": 119, "user_id": "4376db0586f4400c", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 120, "user_id": "4376db0586f4400c", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 121, "user_id": "4376db0586f4400c", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 1}
+{"id": 122, "user_id": "4376db0586f4400c", "exercise_id": 4, "response": "Këngë", "is_correct": true, "score_delta": 1}
+{"id": 123, "user_id": "4376db0586f4400c", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 1}
+{"id": 124, "user_id": "4376db0586f4400c", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 125, "user_id": "4376db0586f4400c", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 126, "user_id": "4376db0586f4400c", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 127, "user_id": "4376db0586f4400c", "exercise_id": 7, "response": "mësuesi", "is_correct": true, "score_delta": 1}
+{"id": 128, "user_id": "4376db0586f4400c", "exercise_id": 8, "response": "e kuqe", "is_correct": true, "score_delta": 1}
+{"id": 129, "user_id": "4376db0586f4400c", "exercise_id": 9, "response": "çadra", "is_correct": true, "score_delta": 1}
+{"id": 130, "user_id": "4376db0586f4400c", "exercise_id": 10, "response": "karrige", "is_correct": true, "score_delta": 1}
+{"id": 131, "user_id": "35389dd189a96d73", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 132, "user_id": "35389dd189a96d73", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 133, "user_id": "35389dd189a96d73", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 1}
+{"id": 134, "user_id": "35389dd189a96d73", "exercise_id": 4, "response": "këngë", "is_correct": true, "score_delta": 1}
+{"id": 135, "user_id": "35389dd189a96d73", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 1}
+{"id": 136, "user_id": "35389dd189a96d73", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 137, "user_id": "35389dd189a96d73", "exercise_id": 7, "response": "mësuesi", "is_correct": true, "score_delta": 1}
+{"id": 138, "user_id": "35389dd189a96d73", "exercise_id": 8, "response": "e kuqe", "is_correct": true, "score_delta": 1}
+{"id": 139, "user_id": "35389dd189a96d73", "exercise_id": 9, "response": "çadra", "is_correct": true, "score_delta": 1}
+{"id": 140, "user_id": "35389dd189a96d73", "exercise_id": 10, "response": "karrige", "is_correct": true, "score_delta": 1}
+{"id": 141, "user_id": "35389dd189a96d73", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 142, "user_id": "35389dd189a96d73", "exercise_id": 12, "response": "i shkurtër", "is_correct": true, "score_delta": 1}
+{"id": 143, "user_id": "35389dd189a96d73", "exercise_id": 13, "response": "i mërzitur", "is_correct": false, "score_delta": 0}
+{"id": 144, "user_id": "35389dd189a96d73", "exercise_id": 13, "response": "i mërzitur", "is_correct": false, "score_delta": 0}
+{"id": 145, "user_id": "35389dd189a96d73", "exercise_id": 13, "response": "i merzitur", "is_correct": false, "score_delta": 0}
+{"id": 146, "user_id": "35389dd189a96d73", "exercise_id": 13, "response": "i trishtuar", "is_correct": true, "score_delta": 1}
+{"id": 147, "user_id": "35389dd189a96d73", "exercise_id": 14, "response": "i nxehtë", "is_correct": true, "score_delta": 1}
+{"id": 148, "user_id": "35389dd189a96d73", "exercise_id": 15, "response": "i ngadaltë", "is_correct": true, "score_delta": 1}
+{"id": 149, "user_id": "35389dd189a96d73", "exercise_id": 16, "response": "i gëzuar", "is_correct": true, "score_delta": 1}
+{"id": 150, "user_id": "35389dd189a96d73", "exercise_id": 17, "response": "i hijshëm", "is_correct": true, "score_delta": 1}
+{"id": 151, "user_id": "35389dd189a96d73", "exercise_id": 18, "response": "i zgjuar", "is_correct": true, "score_delta": 1}
+{"id": 152, "user_id": "35389dd189a96d73", "exercise_id": 19, "response": "heshtur", "is_correct": false, "score_delta": 0}
+{"id": 153, "user_id": "35389dd189a96d73", "exercise_id": 19, "response": "i heshtur", "is_correct": true, "score_delta": 1}
+{"id": 154, "user_id": "35389dd189a96d73", "exercise_id": 20, "response": "trim", "is_correct": true, "score_delta": 1}
+{"id": 155, "user_id": "35389dd189a96d73", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 156, "user_id": "35389dd189a96d73", "exercise_id": 12, "response": "shkurtër", "is_correct": false, "score_delta": 0}
+{"id": 157, "user_id": "35389dd189a96d73", "exercise_id": 12, "response": "i shkurtër", "is_correct": true, "score_delta": 1}
+{"id": 158, "user_id": "35389dd189a96d73", "exercise_id": 13, "response": "i trishtuar", "is_correct": true, "score_delta": 1}
+{"id": 159, "user_id": "35389dd189a96d73", "exercise_id": 14, "response": " i nxehtë", "is_correct": true, "score_delta": 1}
+{"id": 160, "user_id": "35389dd189a96d73", "exercise_id": 15, "response": "i ngadaltë", "is_correct": true, "score_delta": 1}
+{"id": 161, "user_id": "35389dd189a96d73", "exercise_id": 16, "response": "i gëzuar", "is_correct": true, "score_delta": 1}
+{"id": 162, "user_id": "35389dd189a96d73", "exercise_id": 17, "response": "i hijshëm", "is_correct": true, "score_delta": 1}
+{"id": 163, "user_id": "35389dd189a96d73", "exercise_id": 18, "response": "i zgjuar", "is_correct": true, "score_delta": 1}
+{"id": 164, "user_id": "35389dd189a96d73", "exercise_id": 19, "response": "i heshtur", "is_correct": true, "score_delta": 1}
+{"id": 165, "user_id": "35389dd189a96d73", "exercise_id": 20, "response": "trim", "is_correct": true, "score_delta": 1}
+{"id": 166, "user_id": "35389dd189a96d73", "exercise_id": 21, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 167, "user_id": "35389dd189a96d73", "exercise_id": 22, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 168, "user_id": "35389dd189a96d73", "exercise_id": 23, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 169, "user_id": "35389dd189a96d73", "exercise_id": 24, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 170, "user_id": "35389dd189a96d73", "exercise_id": 25, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 171, "user_id": "35389dd189a96d73", "exercise_id": 26, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 172, "user_id": "35389dd189a96d73", "exercise_id": 27, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 173, "user_id": "35389dd189a96d73", "exercise_id": 28, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 174, "user_id": "35389dd189a96d73", "exercise_id": 29, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 175, "user_id": "35389dd189a96d73", "exercise_id": 30, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 176, "user_id": "35389dd189a96d73", "exercise_id": 31, "response": "gjysh", "is_correct": true, "score_delta": 1}
+{"id": 177, "user_id": "35389dd189a96d73", "exercise_id": 32, "response": "fshat", "is_correct": true, "score_delta": 1}
+{"id": 178, "user_id": "35389dd189a96d73", "exercise_id": 33, "response": "zog", "is_correct": true, "score_delta": 1}
+{"id": 179, "user_id": "35389dd189a96d73", "exercise_id": 34, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 180, "user_id": "35389dd189a96d73", "exercise_id": 35, "response": "baba", "is_correct": true, "score_delta": 1}
+{"id": 181, "user_id": "35389dd189a96d73", "exercise_id": 36, "response": "nënë", "is_correct": true, "score_delta": 1}
+{"id": 182, "user_id": "35389dd189a96d73", "exercise_id": 37, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 183, "user_id": "35389dd189a96d73", "exercise_id": 38, "response": "mol", "is_correct": false, "score_delta": 0}
+{"id": 184, "user_id": "35389dd189a96d73", "exercise_id": 38, "response": "mal", "is_correct": true, "score_delta": 1}
+{"id": 185, "user_id": "35389dd189a96d73", "exercise_id": 39, "response": "mirë", "is_correct": true, "score_delta": 1}
+{"id": 186, "user_id": "35389dd189a96d73", "exercise_id": 40, "response": "makinë", "is_correct": true, "score_delta": 1}
+{"id": 187, "user_id": "35389dd189a96d73", "exercise_id": 41, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 188, "user_id": "35389dd189a96d73", "exercise_id": 42, "response": "kafshë", "is_correct": true, "score_delta": 1}
+{"id": 189, "user_id": "35389dd189a96d73", "exercise_id": 43, "response": "madh", "is_correct": true, "score_delta": 1}
+{"id": 190, "user_id": "35389dd189a96d73", "exercise_id": 44, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 191, "user_id": "35389dd189a96d73", "exercise_id": 45, "response": "natën", "is_correct": true, "score_delta": 1}
+{"id": 192, "user_id": "35389dd189a96d73", "exercise_id": 46, "response": "ditën", "is_correct": true, "score_delta": 1}
+{"id": 193, "user_id": "35389dd189a96d73", "exercise_id": 47, "response": "qiell", "is_correct": true, "score_delta": 1}
+{"id": 194, "user_id": "35389dd189a96d73", "exercise_id": 48, "response": "lart", "is_correct": true, "score_delta": 1}
+{"id": 195, "user_id": "35389dd189a96d73", "exercise_id": 48, "response": "lart", "is_correct": true, "score_delta": 1}
+{"id": 196, "user_id": "35389dd189a96d73", "exercise_id": 49, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 197, "user_id": "35389dd189a96d73", "exercise_id": 50, "response": "diell", "is_correct": true, "score_delta": 1}
+{"id": 198, "user_id": "35389dd189a96d73", "exercise_id": 51, "response": "lumë", "is_correct": true, "score_delta": 1}
+{"id": 199, "user_id": "35389dd189a96d73", "exercise_id": 52, "response": "zog", "is_correct": true, "score_delta": 1}
+{"id": 200, "user_id": "35389dd189a96d73", "exercise_id": 53, "response": "kalë", "is_correct": true, "score_delta": 1}
+{"id": 201, "user_id": "35389dd189a96d73", "exercise_id": 54, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 202, "user_id": "35389dd189a96d73", "exercise_id": 55, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 203, "user_id": "35389dd189a96d73", "exercise_id": 56, "response": "derë", "is_correct": true, "score_delta": 1}
+{"id": 204, "user_id": "35389dd189a96d73", "exercise_id": 57, "response": "baba", "is_correct": true, "score_delta": 1}
+{"id": 205, "user_id": "35389dd189a96d73", "exercise_id": 58, "response": "nënë", "is_correct": true, "score_delta": 1}
+{"id": 206, "user_id": "35389dd189a96d73", "exercise_id": 59, "response": "zero", "is_correct": true, "score_delta": 1}
+{"id": 207, "user_id": "35389dd189a96d73", "exercise_id": 60, "response": "një", "is_correct": true, "score_delta": 1}
+{"id": 208, "user_id": "35389dd189a96d73", "exercise_id": 61, "response": "dy", "is_correct": true, "score_delta": 1}
+{"id": 209, "user_id": "35389dd189a96d73", "exercise_id": 62, "response": "tre", "is_correct": true, "score_delta": 1}
+{"id": 210, "user_id": "35389dd189a96d73", "exercise_id": 63, "response": "katër", "is_correct": true, "score_delta": 1}
+{"id": 211, "user_id": "35389dd189a96d73", "exercise_id": 64, "response": "pesë", "is_correct": true, "score_delta": 1}
+{"id": 212, "user_id": "35389dd189a96d73", "exercise_id": 65, "response": "_____gjashtë", "is_correct": false, "score_delta": 0}
+{"id": 213, "user_id": "35389dd189a96d73", "exercise_id": 65, "response": "gjashtë", "is_correct": true, "score_delta": 1}
+{"id": 214, "user_id": "35389dd189a96d73", "exercise_id": 66, "response": "shtatë", "is_correct": true, "score_delta": 1}
+{"id": 215, "user_id": "35389dd189a96d73", "exercise_id": 67, "response": "tetë", "is_correct": true, "score_delta": 1}
+{"id": 216, "user_id": "35389dd189a96d73", "exercise_id": 68, "response": "nëntë", "is_correct": true, "score_delta": 1}
+{"id": 217, "user_id": "35389dd189a96d73", "exercise_id": 69, "response": "dhjetë", "is_correct": true, "score_delta": 1}
+{"id": 218, "user_id": "35389dd189a96d73", "exercise_id": 70, "response": "Mësuesi", "is_correct": true, "score_delta": 1}
+{"id": 219, "user_id": "35389dd189a96d73", "exercise_id": 71, "response": "Peshku", "is_correct": true, "score_delta": 1}
+{"id": 220, "user_id": "35389dd189a96d73", "exercise_id": 72, "response": "Pema", "is_correct": true, "score_delta": 1}
+{"id": 221, "user_id": "35389dd189a96d73", "exercise_id": 73, "response": "Dielli", "is_correct": true, "score_delta": 1}
+{"id": 222, "user_id": "35389dd189a96d73", "exercise_id": 74, "response": "Babi bleu një top të kuq.", "is_correct": true, "score_delta": 1}
+{"id": 223, "user_id": "35389dd189a96d73", "exercise_id": 75, "response": "Shiu bie në kopsht.", "is_correct": true, "score_delta": 1}
+{"id": 224, "user_id": "35389dd189a96d73", "exercise_id": 76, "response": "Hëna ndriçon natën.", "is_correct": true, "score_delta": 1}
+{"id": 225, "user_id": "35389dd189a96d73", "exercise_id": 77, "response": "Unë dua të shkoj në shkollë.", "is_correct": true, "score_delta": 1}
+{"id": 226, "user_id": "35389dd189a96d73", "exercise_id": 78, "response": " Gjyshi lexon përralla.", "is_correct": true, "score_delta": 1}
+{"id": 227, "user_id": "35389dd189a96d73", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 228, "user_id": "35389dd189a96d73", "exercise_id": 80, "response": "shishe", "is_correct": true, "score_delta": 1}
+{"id": 229, "user_id": "35389dd189a96d73", "exercise_id": 81, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 230, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "karrige", "is_correct": false, "score_delta": 0}
+{"id": 231, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "karrige", "is_correct": false, "score_delta": 0}
+{"id": 232, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 233, "user_id": "35389dd189a96d73", "exercise_id": 83, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 234, "user_id": "35389dd189a96d73", "exercise_id": 84, "response": "laps", "is_correct": false, "score_delta": 0}
+{"id": 235, "user_id": "35389dd189a96d73", "exercise_id": 84, "response": "top", "is_correct": false, "score_delta": 0}
+{"id": 236, "user_id": "35389dd189a96d73", "exercise_id": 84, "response": "lumturi", "is_correct": true, "score_delta": 1}
+{"id": 237, "user_id": "35389dd189a96d73", "exercise_id": 85, "response": "trishtim", "is_correct": true, "score_delta": 1}
+{"id": 238, "user_id": "35389dd189a96d73", "exercise_id": 86, "response": "dashuri", "is_correct": true, "score_delta": 1}
+{"id": 239, "user_id": "35389dd189a96d73", "exercise_id": 87, "response": "frikë", "is_correct": true, "score_delta": 1}
+{"id": 240, "user_id": "35389dd189a96d73", "exercise_id": 88, "response": "mendim", "is_correct": true, "score_delta": 1}
+{"id": 241, "user_id": "35389dd189a96d73", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 242, "user_id": "35389dd189a96d73", "exercise_id": 80, "response": "gëzim", "is_correct": false, "score_delta": 0}
+{"id": 243, "user_id": "35389dd189a96d73", "exercise_id": 80, "response": "derë", "is_correct": false, "score_delta": 0}
+{"id": 244, "user_id": "35389dd189a96d73", "exercise_id": 80, "response": "shishe", "is_correct": true, "score_delta": 1}
+{"id": 245, "user_id": "35389dd189a96d73", "exercise_id": 81, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 246, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "karrige", "is_correct": false, "score_delta": 0}
+{"id": 247, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "karrige", "is_correct": false, "score_delta": 0}
+{"id": 248, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 249, "user_id": "35389dd189a96d73", "exercise_id": 83, "response": "pemë", "is_correct": false, "score_delta": 0}
+{"id": 250, "user_id": "35389dd189a96d73", "exercise_id": 83, "response": "frikë", "is_correct": false, "score_delta": 0}
+{"id": 251, "user_id": "35389dd189a96d73", "exercise_id": 83, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 252, "user_id": "35389dd189a96d73", "exercise_id": 84, "response": "lumturi", "is_correct": true, "score_delta": 1}
+{"id": 253, "user_id": "35389dd189a96d73", "exercise_id": 85, "response": "trishtim", "is_correct": true, "score_delta": 1}
+{"id": 254, "user_id": "35389dd189a96d73", "exercise_id": 86, "response": "dashuri", "is_correct": true, "score_delta": 1}
+{"id": 255, "user_id": "35389dd189a96d73", "exercise_id": 87, "response": "frikë", "is_correct": true, "score_delta": 1}
+{"id": 256, "user_id": "35389dd189a96d73", "exercise_id": 88, "response": "mendim", "is_correct": true, "score_delta": 1}
+{"id": 257, "user_id": "35389dd189a96d73", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 258, "user_id": "35389dd189a96d73", "exercise_id": 80, "response": "shishe", "is_correct": true, "score_delta": 1}
+{"id": 259, "user_id": "35389dd189a96d73", "exercise_id": 81, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 260, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "karrige", "is_correct": false, "score_delta": 0}
+{"id": 261, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 262, "user_id": "35389dd189a96d73", "exercise_id": 83, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 263, "user_id": "35389dd189a96d73", "exercise_id": 84, "response": "lumturi", "is_correct": true, "score_delta": 1}
+{"id": 264, "user_id": "35389dd189a96d73", "exercise_id": 85, "response": "trishtim", "is_correct": true, "score_delta": 1}
+{"id": 265, "user_id": "35389dd189a96d73", "exercise_id": 86, "response": "dashuri", "is_correct": true, "score_delta": 1}
+{"id": 266, "user_id": "35389dd189a96d73", "exercise_id": 87, "response": "frikë", "is_correct": true, "score_delta": 1}
+{"id": 267, "user_id": "35389dd189a96d73", "exercise_id": 88, "response": "mendim", "is_correct": true, "score_delta": 1}
+{"id": 268, "user_id": "35389dd189a96d73", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 269, "user_id": "35389dd189a96d73", "exercise_id": 80, "response": "shishe", "is_correct": true, "score_delta": 1}
+{"id": 270, "user_id": "35389dd189a96d73", "exercise_id": 81, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 271, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 272, "user_id": "35389dd189a96d73", "exercise_id": 83, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 273, "user_id": "35389dd189a96d73", "exercise_id": 84, "response": "lumturi", "is_correct": true, "score_delta": 1}
+{"id": 274, "user_id": "35389dd189a96d73", "exercise_id": 85, "response": "trishtim", "is_correct": true, "score_delta": 1}
+{"id": 275, "user_id": "35389dd189a96d73", "exercise_id": 86, "response": "dashuri", "is_correct": true, "score_delta": 1}
+{"id": 276, "user_id": "35389dd189a96d73", "exercise_id": 87, "response": "frikë", "is_correct": true, "score_delta": 1}
+{"id": 277, "user_id": "35389dd189a96d73", "exercise_id": 88, "response": "mendim", "is_correct": true, "score_delta": 1}
+{"id": 278, "user_id": "35389dd189a96d73", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 279, "user_id": "35389dd189a96d73", "exercise_id": 80, "response": "shishe", "is_correct": true, "score_delta": 1}
+{"id": 280, "user_id": "35389dd189a96d73", "exercise_id": 81, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 281, "user_id": "35389dd189a96d73", "exercise_id": 82, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 282, "user_id": "35389dd189a96d73", "exercise_id": 89, "response": "Rina ka një laps.", "is_correct": true, "score_delta": 1}
+{"id": 283, "user_id": "35389dd189a96d73", "exercise_id": 90, "response": "Qeni është kafshë.", "is_correct": true, "score_delta": 1}
+{"id": 284, "user_id": "35389dd189a96d73", "exercise_id": 91, "response": "Hëna ndriçon natën", "is_correct": false, "score_delta": 0}
+{"id": 285, "user_id": "35389dd189a96d73", "exercise_id": 91, "response": "Hëna ndriçon natën.", "is_correct": true, "score_delta": 1}
+{"id": 286, "user_id": "35389dd189a96d73", "exercise_id": 92, "response": "Macja luan me top.", "is_correct": true, "score_delta": 1}
+{"id": 287, "user_id": "35389dd189a96d73", "exercise_id": 93, "response": "Gjyshi tregon përralla.", "is_correct": true, "score_delta": 1}
+{"id": 288, "user_id": "35389dd189a96d73", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 289, "user_id": "35389dd189a96d73", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 290, "user_id": "35389dd189a96d73", "exercise_id": 89, "response": "Rina ka një laps.", "is_correct": true, "score_delta": 1}
+{"id": 291, "user_id": "35389dd189a96d73", "exercise_id": 79, "response": "trishtim", "is_correct": false, "score_delta": 0}
+{"id": 292, "user_id": "69756462127fecd6", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 293, "user_id": "69756462127fecd6", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 294, "user_id": "69756462127fecd6", "exercise_id": 3, "response": "Dritë", "is_correct": true, "score_delta": 1}
+{"id": 295, "user_id": "69756462127fecd6", "exercise_id": 4, "response": "Këngë", "is_correct": true, "score_delta": 1}
+{"id": 296, "user_id": "69756462127fecd6", "exercise_id": 5, "response": "Shkollë", "is_correct": true, "score_delta": 1}
+{"id": 297, "user_id": "69756462127fecd6", "exercise_id": 6, "response": "prindërit", "is_correct": true, "score_delta": 1}
+{"id": 298, "user_id": "69756462127fecd6", "exercise_id": 7, "response": "mësuesi", "is_correct": true, "score_delta": 1}
+{"id": 299, "user_id": "69756462127fecd6", "exercise_id": 8, "response": "e kuqe", "is_correct": true, "score_delta": 1}
+{"id": 300, "user_id": "69756462127fecd6", "exercise_id": 9, "response": "çadra", "is_correct": true, "score_delta": 1}
+{"id": 301, "user_id": "69756462127fecd6", "exercise_id": 10, "response": "karrige", "is_correct": true, "score_delta": 1}
+{"id": 302, "user_id": "69756462127fecd6", "exercise_id": 11, "response": "i keq", "is_correct": true, "score_delta": 1}
+{"id": 303, "user_id": "69756462127fecd6", "exercise_id": 12, "response": "i shkurtër", "is_correct": true, "score_delta": 1}
+{"id": 304, "user_id": "69756462127fecd6", "exercise_id": 13, "response": " i trishtuar", "is_correct": true, "score_delta": 1}
+{"id": 305, "user_id": "69756462127fecd6", "exercise_id": 14, "response": "i nxehtë", "is_correct": true, "score_delta": 1}
+{"id": 306, "user_id": "69756462127fecd6", "exercise_id": 15, "response": "i ngadaltë", "is_correct": true, "score_delta": 1}
+{"id": 307, "user_id": "69756462127fecd6", "exercise_id": 16, "response": "i gëzuar", "is_correct": true, "score_delta": 1}
+{"id": 308, "user_id": "69756462127fecd6", "exercise_id": 17, "response": "i hijshëm", "is_correct": true, "score_delta": 1}
+{"id": 309, "user_id": "69756462127fecd6", "exercise_id": 18, "response": "i zgjuar", "is_correct": true, "score_delta": 1}
+{"id": 310, "user_id": "69756462127fecd6", "exercise_id": 19, "response": "i heshtur", "is_correct": true, "score_delta": 1}
+{"id": 311, "user_id": "69756462127fecd6", "exercise_id": 20, "response": "trim", "is_correct": true, "score_delta": 1}
+{"id": 312, "user_id": "69756462127fecd6", "exercise_id": 21, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 313, "user_id": "69756462127fecd6", "exercise_id": 22, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 314, "user_id": "69756462127fecd6", "exercise_id": 23, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 315, "user_id": "69756462127fecd6", "exercise_id": 24, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 316, "user_id": "69756462127fecd6", "exercise_id": 25, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 317, "user_id": "69756462127fecd6", "exercise_id": 26, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 318, "user_id": "69756462127fecd6", "exercise_id": 27, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 319, "user_id": "69756462127fecd6", "exercise_id": 28, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 320, "user_id": "69756462127fecd6", "exercise_id": 29, "response": "Shqip", "is_correct": true, "score_delta": 1}
+{"id": 321, "user_id": "69756462127fecd6", "exercise_id": 30, "response": "Huazim", "is_correct": true, "score_delta": 1}
+{"id": 322, "user_id": "69756462127fecd6", "exercise_id": 31, "response": "gjysh", "is_correct": true, "score_delta": 1}
+{"id": 323, "user_id": "69756462127fecd6", "exercise_id": 32, "response": "fshat", "is_correct": true, "score_delta": 1}
+{"id": 324, "user_id": "69756462127fecd6", "exercise_id": 33, "response": "zog", "is_correct": true, "score_delta": 1}
+{"id": 325, "user_id": "69756462127fecd6", "exercise_id": 34, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 326, "user_id": "69756462127fecd6", "exercise_id": 35, "response": "baba", "is_correct": true, "score_delta": 1}
+{"id": 327, "user_id": "69756462127fecd6", "exercise_id": 36, "response": "Nënë", "is_correct": true, "score_delta": 1}
+{"id": 328, "user_id": "69756462127fecd6", "exercise_id": 37, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 329, "user_id": "69756462127fecd6", "exercise_id": 38, "response": "mal", "is_correct": true, "score_delta": 1}
+{"id": 330, "user_id": "69756462127fecd6", "exercise_id": 39, "response": "mirë", "is_correct": true, "score_delta": 1}
+{"id": 331, "user_id": "69756462127fecd6", "exercise_id": 40, "response": "makinë", "is_correct": true, "score_delta": 1}
+{"id": 332, "user_id": "69756462127fecd6", "exercise_id": 41, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 333, "user_id": "69756462127fecd6", "exercise_id": 42, "response": "kafshë", "is_correct": true, "score_delta": 1}
+{"id": 334, "user_id": "69756462127fecd6", "exercise_id": 43, "response": "madh", "is_correct": true, "score_delta": 1}
+{"id": 335, "user_id": "69756462127fecd6", "exercise_id": 44, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 336, "user_id": "69756462127fecd6", "exercise_id": 45, "response": "natën", "is_correct": true, "score_delta": 1}
+{"id": 337, "user_id": "69756462127fecd6", "exercise_id": 46, "response": "ditën", "is_correct": true, "score_delta": 1}
+{"id": 338, "user_id": "69756462127fecd6", "exercise_id": 47, "response": "qiell", "is_correct": true, "score_delta": 1}
+{"id": 339, "user_id": "69756462127fecd6", "exercise_id": 48, "response": "lart", "is_correct": true, "score_delta": 1}
+{"id": 340, "user_id": "69756462127fecd6", "exercise_id": 49, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 341, "user_id": "69756462127fecd6", "exercise_id": 50, "response": "diell", "is_correct": true, "score_delta": 1}
+{"id": 342, "user_id": "69756462127fecd6", "exercise_id": 51, "response": "lumë", "is_correct": true, "score_delta": 1}
+{"id": 343, "user_id": "69756462127fecd6", "exercise_id": 52, "response": "zog", "is_correct": true, "score_delta": 1}
+{"id": 344, "user_id": "69756462127fecd6", "exercise_id": 53, "response": "kalë", "is_correct": true, "score_delta": 1}
+{"id": 345, "user_id": "69756462127fecd6", "exercise_id": 54, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 346, "user_id": "69756462127fecd6", "exercise_id": 55, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 347, "user_id": "69756462127fecd6", "exercise_id": 56, "response": "derë", "is_correct": true, "score_delta": 1}
+{"id": 348, "user_id": "69756462127fecd6", "exercise_id": 57, "response": "baba", "is_correct": true, "score_delta": 1}
+{"id": 349, "user_id": "69756462127fecd6", "exercise_id": 58, "response": "nënë", "is_correct": true, "score_delta": 1}
+{"id": 350, "user_id": "69756462127fecd6", "exercise_id": 59, "response": "zero", "is_correct": true, "score_delta": 1}
+{"id": 351, "user_id": "69756462127fecd6", "exercise_id": 60, "response": "një", "is_correct": true, "score_delta": 1}
+{"id": 352, "user_id": "69756462127fecd6", "exercise_id": 61, "response": "dy", "is_correct": true, "score_delta": 1}
+{"id": 353, "user_id": "69756462127fecd6", "exercise_id": 62, "response": "tre", "is_correct": true, "score_delta": 1}
+{"id": 354, "user_id": "69756462127fecd6", "exercise_id": 63, "response": "katër", "is_correct": true, "score_delta": 1}
+{"id": 355, "user_id": "69756462127fecd6", "exercise_id": 64, "response": "pesë", "is_correct": true, "score_delta": 1}
+{"id": 356, "user_id": "69756462127fecd6", "exercise_id": 65, "response": "gjashtë", "is_correct": true, "score_delta": 1}
+{"id": 357, "user_id": "69756462127fecd6", "exercise_id": 66, "response": "shtatë", "is_correct": true, "score_delta": 1}
+{"id": 358, "user_id": "69756462127fecd6", "exercise_id": 67, "response": "tetë", "is_correct": true, "score_delta": 1}
+{"id": 359, "user_id": "69756462127fecd6", "exercise_id": 68, "response": "nëntë", "is_correct": true, "score_delta": 1}
+{"id": 360, "user_id": "69756462127fecd6", "exercise_id": 69, "response": "dhjetë", "is_correct": true, "score_delta": 1}
+{"id": 361, "user_id": "69756462127fecd6", "exercise_id": 70, "response": "Mësuesi", "is_correct": true, "score_delta": 1}
+{"id": 362, "user_id": "69756462127fecd6", "exercise_id": 71, "response": "Peshku", "is_correct": true, "score_delta": 1}
+{"id": 363, "user_id": "69756462127fecd6", "exercise_id": 72, "response": "Pema", "is_correct": true, "score_delta": 1}
+{"id": 364, "user_id": "69756462127fecd6", "exercise_id": 73, "response": "Dielli", "is_correct": true, "score_delta": 1}
+{"id": 365, "user_id": "69756462127fecd6", "exercise_id": 74, "response": "Babi bleu një top të kuq.", "is_correct": true, "score_delta": 1}
+{"id": 366, "user_id": "69756462127fecd6", "exercise_id": 75, "response": "Shiu bie në kopsht.", "is_correct": true, "score_delta": 1}
+{"id": 367, "user_id": "69756462127fecd6", "exercise_id": 76, "response": "Hëna ndriçon natën.", "is_correct": true, "score_delta": 1}
+{"id": 368, "user_id": "69756462127fecd6", "exercise_id": 77, "response": "Unë dua të shkoj në shkollë.", "is_correct": true, "score_delta": 1}
+{"id": 369, "user_id": "69756462127fecd6", "exercise_id": 78, "response": "Gjyshi lexon përralla.", "is_correct": true, "score_delta": 1}
+{"id": 370, "user_id": "69756462127fecd6", "exercise_id": 79, "response": "trishtim", "is_correct": false, "score_delta": 0}
+{"id": 371, "user_id": "69756462127fecd6", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 372, "user_id": "69756462127fecd6", "exercise_id": 80, "response": "derë", "is_correct": false, "score_delta": 0}
+{"id": 373, "user_id": "69756462127fecd6", "exercise_id": 80, "response": "shishe", "is_correct": true, "score_delta": 1}
+{"id": 374, "user_id": "69756462127fecd6", "exercise_id": 81, "response": "top", "is_correct": true, "score_delta": 1}
+{"id": 375, "user_id": "69756462127fecd6", "exercise_id": 82, "response": "pemë", "is_correct": true, "score_delta": 1}
+{"id": 376, "user_id": "69756462127fecd6", "exercise_id": 83, "response": "laps", "is_correct": true, "score_delta": 1}
+{"id": 377, "user_id": "69756462127fecd6", "exercise_id": 84, "response": "lumturi", "is_correct": true, "score_delta": 1}
+{"id": 378, "user_id": "69756462127fecd6", "exercise_id": 85, "response": "trishtim", "is_correct": true, "score_delta": 1}
+{"id": 379, "user_id": "69756462127fecd6", "exercise_id": 86, "response": "dashuri", "is_correct": true, "score_delta": 1}
+{"id": 380, "user_id": "69756462127fecd6", "exercise_id": 87, "response": "frikë", "is_correct": true, "score_delta": 1}
+{"id": 381, "user_id": "69756462127fecd6", "exercise_id": 88, "response": "mendim", "is_correct": true, "score_delta": 1}
+{"id": 382, "user_id": "69756462127fecd6", "exercise_id": 89, "response": "Rina ka një laps.", "is_correct": true, "score_delta": 1}
+{"id": 383, "user_id": "69756462127fecd6", "exercise_id": 90, "response": "Qeni është kafshë.", "is_correct": true, "score_delta": 1}
+{"id": 384, "user_id": "69756462127fecd6", "exercise_id": 91, "response": "Hëna ndriçon natën.", "is_correct": true, "score_delta": 1}
+{"id": 385, "user_id": "69756462127fecd6", "exercise_id": 92, "response": "Macja luan me top.", "is_correct": true, "score_delta": 1}
+{"id": 386, "user_id": "69756462127fecd6", "exercise_id": 93, "response": "Gjyshi tregon përralla.", "is_correct": true, "score_delta": 1}
+{"id": 387, "user_id": "69756462127fecd6", "exercise_id": 79, "response": "trishtim", "is_correct": false, "score_delta": 0}
+{"id": 388, "user_id": "69756462127fecd6", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 389, "user_id": "69756462127fecd6", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 390, "user_id": "69756462127fecd6", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 391, "user_id": "69756462127fecd6", "exercise_id": 94, "response": "Lojtari", "is_correct": false, "score_delta": 0}
+{"id": 392, "user_id": "69756462127fecd6", "exercise_id": 94, "response": "Lojëtar", "is_correct": false, "score_delta": 0}
+{"id": 393, "user_id": "35389dd189a96d73", "exercise_id": 79, "response": "libër", "is_correct": true, "score_delta": 1}
+{"id": 394, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 395, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 396, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 397, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 398, "user_id": "05954bda1314a375", "exercise_id": 2, "response": "Topi", "is_correct": true, "score_delta": 1}
+{"id": 399, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 400, "user_id": "07a7514ac1eeece0", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 401, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "Zogi", "is_correct": true, "score_delta": 1}
+{"id": 402, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 403, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 404, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 405, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 406, "user_id": "35389dd189a96d73", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 407, "user_id": "35389dd189a96d73", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 408, "user_id": "35389dd189a96d73", "exercise_id": 1, "response": "zog", "is_correct": false, "score_delta": 0}
+{"id": 409, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 410, "user_id": "05954bda1314a375", "exercise_id": 2, "response": "top", "is_correct": false, "score_delta": 0}
+{"id": 411, "user_id": "05954bda1314a375", "exercise_id": 2, "response": "topii", "is_correct": false, "score_delta": 0}
+{"id": 412, "user_id": "05954bda1314a375", "exercise_id": 2, "response": "topi", "is_correct": true, "score_delta": 1}
+{"id": 413, "user_id": "05954bda1314a375", "exercise_id": 1, "response": "zogi", "is_correct": true, "score_delta": 1}
+{"id": 414, "user_id": "05954bda1314a375", "exercise_id": 2, "response": "topi", "is_correct": true, "score_delta": 1}
+{"id": 415, "user_id": "05954bda1314a375", "exercise_id": 3, "response": "dritë", "is_correct": true, "score_delta": 1}
+{"id": 416, "user_id": "05954bda1314a375", "exercise_id": 4, "response": "këngë", "is_correct": true, "score_delta": 1}
+{"id": 417, "user_id": "05954bda1314a375", "exercise_id": 5, "response": "shkollë", "is_correct": true, "score_delta": 1}
