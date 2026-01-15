@@ -10,7 +10,7 @@ export default defineConfig({
       '/api': {
         // Backend is running with your command on port 8001:
         // python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload
-        target: 'http://127.0.0.1:8001',
+        target: process.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
     },

@@ -207,7 +207,9 @@ export interface AICoachResponse {
 	drill_plan: string[]
 }
 
-const client = axios.create({ baseURL: '' })
+// Get API base URL from environment variable or use relative path for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+const client = axios.create({ baseURL: API_BASE_URL })
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
