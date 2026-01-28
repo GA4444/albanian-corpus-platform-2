@@ -169,11 +169,18 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     # Course is completed only if all levels are completed AND we have at least one level
     course_completed = (completed_levels == len(course_levels)) and len(course_levels) > 0 and completed_levels > 0
     
+    # Commit attempt and level progress before any optional/secondary logic
     db.commit()
     
-    # Update course progress
-    from .course_progression import update_course_progress
-    course_progress = update_course_progress(db, int(request.user_id), exercise.course_id)
+    # Update course progress in a safe way so that any DB inconsistencies
+    # (e.g. legacy data, constraint issues) do NOT break answer submission.
+    course_progress = None
+    try:
+        from .course_progression import update_course_progress
+        course_progress = update_course_progress(db, int(request.user_id), exercise.course_id)
+    except Exception as e:
+        # Log but continue – the main flow (answer evaluation) must not fail
+        print(f"[WARNING] Course progress update error for user {request.user_id}, course {exercise.course_id}: {e}")
     
     # ========== GAMIFICATION INTEGRATION ==========
     try:
@@ -208,7 +215,7 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     
     # Prepare response message
     if is_correct:
-        if course_progress.is_completed and not course_completed:
+        if course_progress is not None and course_progress.is_completed and not course_completed:
             message = f"🎉 Kurs i përfunduar! Saktësia: {course_progress.accuracy_percentage:.1f}% - Kursi i ardhshëm u hap! 🚀"
         elif level_completed:
             message = f"🎉 Nivel i përfunduar! Saktësia: {accuracy:.1f}%"
@@ -225,7 +232,7 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
         new_errors=progress.errors,
         stars=progress.stars,
         level_completed=level_completed,
-        course_completed=course_progress.is_completed,
+        course_completed=course_progress.is_completed if course_progress is not None else False,
         message=message
     )
 
