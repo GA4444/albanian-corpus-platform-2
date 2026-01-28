@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
 from ..database import get_db
 from .. import models, schemas
 from passlib.context import CryptContext
@@ -59,28 +61,64 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
 				is_admin=db_user.is_admin
 			)
 			
+		except IntegrityError as e:
+			# Rollback before handling error
+			db.rollback()
+			
+			error_str = str(e.orig) if hasattr(e, 'orig') else str(e)
+			# Check if it's a sequence issue (duplicate key on primary key)
+			is_sequence_error = (
+				"duplicate key value violates unique constraint" in error_str and 
+				"users_pkey" in error_str
+			)
+			
+			if is_sequence_error and attempt < max_retries - 1:
+				# Try to fix the sequence and retry
+				try:
+					result = db.execute(text("SELECT COALESCE(MAX(id), 0) FROM users"))
+					max_id = result.scalar()
+					db.execute(text(f"SELECT setval('users_id_seq', {max_id + 1}, false)"))
+					db.commit()
+					print(f"[FIXED] Reset users_id_seq to {max_id + 1}, retrying registration...")
+					continue  # Retry the user creation
+				except Exception as seq_error:
+					print(f"[ERROR] Failed to fix sequence: {seq_error}")
+					import traceback
+					traceback.print_exc()
+					raise HTTPException(status_code=500, detail="Registration failed: Database sequence error. Please contact support.")
+			else:
+				# Re-raise IntegrityError to be handled by outer exception handler
+				raise
 		except Exception as e:
+			# Rollback before handling error
+			db.rollback()
+			
 			error_str = str(e)
 			# Check if it's a sequence issue (duplicate key on primary key)
-			if "duplicate key value violates unique constraint" in error_str and "users_pkey" in error_str:
-				if attempt < max_retries - 1:
-					# Try to fix the sequence and retry
-					try:
-						from sqlalchemy import text
-						result = db.execute(text("SELECT COALESCE(MAX(id), 0) FROM users"))
-						max_id = result.scalar()
-						db.execute(text(f"SELECT setval('users_id_seq', {max_id + 1}, false)"))
-						db.commit()
-						print(f"[FIXED] Reset users_id_seq to {max_id + 1}, retrying registration...")
-						continue  # Retry the user creation
-					except Exception as seq_error:
-						print(f"[ERROR] Failed to fix sequence: {seq_error}")
-						raise HTTPException(status_code=500, detail="Registration failed: Database sequence error. Please contact support.")
-				else:
+			is_sequence_error = (
+				"duplicate key value violates unique constraint" in error_str and 
+				"users_pkey" in error_str
+			)
+			
+			if is_sequence_error and attempt < max_retries - 1:
+				# Try to fix the sequence and retry
+				try:
+					result = db.execute(text("SELECT COALESCE(MAX(id), 0) FROM users"))
+					max_id = result.scalar()
+					db.execute(text(f"SELECT setval('users_id_seq', {max_id + 1}, false)"))
+					db.commit()
+					print(f"[FIXED] Reset users_id_seq to {max_id + 1}, retrying registration...")
+					continue  # Retry the user creation
+				except Exception as seq_error:
+					print(f"[ERROR] Failed to fix sequence: {seq_error}")
+					import traceback
+					traceback.print_exc()
 					raise HTTPException(status_code=500, detail="Registration failed: Database sequence error. Please contact support.")
 			else:
 				# Other errors - raise immediately
 				print(f"[ERROR] Registration error: {e}")
+				import traceback
+				traceback.print_exc()
 				raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 	
 	# Should never reach here, but just in case
@@ -185,5 +223,36 @@ def update_user_preferences(
 	
 	db.commit()
 	return {"message": "Preferences updated successfully"}
+
+
+@router.post("/fix-users-sequence")
+def fix_users_sequence(db: Session = Depends(get_db)):
+	"""Fix PostgreSQL sequence for users table - admin utility"""
+	try:
+		result = db.execute(text("SELECT COALESCE(MAX(id), 0) FROM users"))
+		max_id = result.scalar()
+		
+		result = db.execute(text("SELECT last_value FROM users_id_seq"))
+		current_seq = result.scalar()
+		
+		if max_id >= current_seq:
+			new_seq_value = max_id + 1
+			db.execute(text(f"SELECT setval('users_id_seq', {new_seq_value}, false)"))
+			db.commit()
+			return {
+				"message": "Sequence fixed successfully",
+				"max_id": max_id,
+				"old_sequence": current_seq,
+				"new_sequence": new_seq_value
+			}
+		else:
+			return {
+				"message": "Sequence is already correct",
+				"max_id": max_id,
+				"current_sequence": current_seq
+			}
+	except Exception as e:
+		db.rollback()
+		raise HTTPException(status_code=500, detail=f"Failed to fix sequence: {str(e)}")
 
 
