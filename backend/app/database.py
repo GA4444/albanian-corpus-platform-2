@@ -6,6 +6,12 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import OperationalError, DisconnectionError, IntegrityError
 from fastapi import HTTPException
 
+# Import psycopg2 errors for direct handling
+try:
+	import psycopg2.errors
+except ImportError:
+	psycopg2 = None
+
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -82,8 +88,14 @@ def get_db():
 		error_type = type(e).__name__
 		error_str = str(e)
 		
-		# Check if it's a unique constraint violation that should be handled as IntegrityError
-		if "UniqueViolation" in error_type or ("duplicate key value violates unique constraint" in error_str):
+		# Check if it's a psycopg2 UniqueViolation error
+		is_unique_violation = False
+		if psycopg2 and isinstance(e, psycopg2.errors.UniqueViolation):
+			is_unique_violation = True
+		elif "UniqueViolation" in error_type or ("duplicate key value violates unique constraint" in error_str):
+			is_unique_violation = True
+		
+		if is_unique_violation:
 			# Convert to IntegrityError-like behavior - let it propagate
 			logger.warning(f"Unique constraint violation (will be handled by endpoint): {e}")
 			if hasattr(e, 'orig'):
