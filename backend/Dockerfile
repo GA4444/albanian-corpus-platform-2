@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install requirements, but make PaddleOCR optional (it may fail on some systems)
-# First install all requirements except PaddleOCR
+# Install requirements (excluding PaddleOCR - it's optional and causes slow builds)
+# PaddleOCR can be installed manually if needed, but Tesseract works fine for most cases
 RUN pip install --no-cache-dir \
     fastapi==0.104.1 \
     uvicorn[standard]==0.24.0 \
@@ -34,9 +34,9 @@ RUN pip install --no-cache-dir \
     "anthropic>=0.8.0" \
     "numpy<2"
 
-# Try to install PaddleOCR (optional - OCR will work with Tesseract only if this fails)
-RUN pip install --no-cache-dir paddlepaddle==2.6.2 paddleocr==2.7.3 || \
-    echo "Warning: PaddleOCR installation failed - OCR will use Tesseract only"
+# Note: PaddleOCR is intentionally excluded from Docker build to speed up deployment
+# The OCR functionality works perfectly with Tesseract (already installed above)
+# If PaddleOCR is needed later, it can be added manually or via a separate step
 
 # Copy application code
 COPY . .
