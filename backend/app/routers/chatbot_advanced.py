@@ -9,7 +9,7 @@ Advanced AI Chatbot with:
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
 import os
@@ -62,6 +62,8 @@ class AdvancedChatRequest(BaseModel):
 
 
 class AdvancedChatResponse(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())  # Allow 'model_used' field name
+    
     response: str
     session_token: str
     suggestions: Optional[List[str]] = None
