@@ -66,6 +66,13 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
 			db.rollback()
 			
 			error_str = str(e.orig) if hasattr(e, 'orig') else str(e)
+			
+			# Check if it's a username/email unique constraint violation
+			if "users_username_key" in error_str or "unique constraint" in error_str.lower() and "username" in error_str.lower():
+				raise HTTPException(status_code=400, detail="Username already registered")
+			if "users_email_key" in error_str or "unique constraint" in error_str.lower() and "email" in error_str.lower():
+				raise HTTPException(status_code=400, detail="Email already registered")
+			
 			# Check if it's a sequence issue (duplicate key on primary key)
 			is_sequence_error = (
 				"duplicate key value violates unique constraint" in error_str and 
@@ -87,8 +94,11 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
 					traceback.print_exc()
 					raise HTTPException(status_code=500, detail="Registration failed: Database sequence error. Please contact support.")
 			else:
-				# Re-raise IntegrityError to be handled by outer exception handler
-				raise
+				# Other IntegrityError - log and raise
+				print(f"[ERROR] IntegrityError during registration: {error_str}")
+				import traceback
+				traceback.print_exc()
+				raise HTTPException(status_code=400, detail=f"Registration failed: {error_str}")
 		except Exception as e:
 			# Rollback before handling error
 			db.rollback()
