@@ -69,20 +69,22 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     exercise_answer_clean = re.sub(r'\s+', ' ', exercise_answer_normalized).strip()
     user_response_clean = re.sub(r'\s+', ' ', user_response_normalized).strip()
     
-    # First, try simple case-insensitive comparison (fastest path)
+    # Compare answers using normalized versions
     is_correct = False
-    if exercise_answer_str.lower().strip() == user_response_str.lower().strip():
-        is_correct = True
-    elif exercise_answer_clean == user_response_clean:
-        # Try exact match after normalization
+    
+    # Method 1: Exact match after normalization (most reliable)
+    if exercise_answer_clean == user_response_clean:
         is_correct = True
     else:
-        # If not matching, try removing all spaces (for cases where user adds spaces or answer has spaces)
+        # Method 2: Try removing all spaces (for cases where user adds spaces or answer has spaces)
         exercise_no_spaces = ''.join(exercise_answer_clean.split())
         user_no_spaces = ''.join(user_response_clean.split())
-        # Accept if they match without spaces (handles both "e kuqe" vs "ekuqe" and "zogi" vs "z ogi")
         if exercise_no_spaces == user_no_spaces and exercise_no_spaces:
             is_correct = True
+        else:
+            # Method 3: Try simple case-insensitive comparison as fallback
+            if exercise_answer_str.lower().strip() == user_response_str.lower().strip():
+                is_correct = True
     
     # Always log for debugging (will show in Render logs)
     
