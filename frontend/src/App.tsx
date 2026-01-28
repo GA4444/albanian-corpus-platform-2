@@ -213,7 +213,7 @@ function App() {
 
             // Priority 2: Secondary features loaded with slight delay (debounced)
             const secondaryTimer = setTimeout(() => {
-                Promise.all([
+            Promise.all([
                     getAdaptiveDifficulty(userId).catch(e => { console.error('Difficulty error:', e); return null; }),
                     getLearningPath(userId).catch(e => { console.error('Path error:', e); return null; }),
                     getProgressInsights(userId).catch(e => { console.error('Insights error:', e); return null; }),
@@ -347,33 +347,33 @@ function App() {
             // Load levels for all classes in background (lazy)
             // This is done with lower priority to not block the UI
             setTimeout(() => {
-                Promise.all(
-                    classesData.map(async (classData: ClassData) => {
-                        try {
-                            const courses = await getClassCourses(classData.id, userId || '1')
-                            const coursesWithLevels = await Promise.all(
-                                courses.map(async (course: CourseOut) => {
-                                    try {
-                                        const levels = await getCourseLevels(course.id)
-                                        return { ...course, levels }
-                                    } catch (error) {
-                                        console.error(`Error fetching levels for course ${course.id}:`, error)
-                                        return { ...course, levels: [] }
-                                    }
-                                })
-                            )
-                            return { ...classData, courses: coursesWithLevels }
-                        } catch (error) {
-                            console.error(`Error loading levels for class ${classData.id}:`, error)
-                            return classData
-                        }
-                    })
-                ).then(classesWithLevels => {
-                    setClasses(classesWithLevels)
-                    setClassesCache({ data: classesWithLevels, timestamp: Date.now() })
-                }).catch(error => {
-                    console.error('Error loading levels for classes:', error)
+            Promise.all(
+                classesData.map(async (classData: ClassData) => {
+                    try {
+                        const courses = await getClassCourses(classData.id, userId || '1')
+                        const coursesWithLevels = await Promise.all(
+                            courses.map(async (course: CourseOut) => {
+                                try {
+                                    const levels = await getCourseLevels(course.id)
+                                    return { ...course, levels }
+                                } catch (error) {
+                                    console.error(`Error fetching levels for course ${course.id}:`, error)
+                                    return { ...course, levels: [] }
+                                }
+                            })
+                        )
+                        return { ...classData, courses: coursesWithLevels }
+                    } catch (error) {
+                        console.error(`Error loading levels for class ${classData.id}:`, error)
+                        return classData
+                    }
                 })
+            ).then(classesWithLevels => {
+                setClasses(classesWithLevels)
+                    setClassesCache({ data: classesWithLevels, timestamp: Date.now() })
+            }).catch(error => {
+                console.error('Error loading levels for classes:', error)
+            })
             }, 100) // Small delay to prioritize main UI
             
             setIsLoading(false)
@@ -1272,71 +1272,71 @@ function App() {
     return (
         <div className="app">
             {/* HEADER SECTION */}
-            <Header
-                userStats={userStats}
-                selectedClass={selectedClass}
-                selectedCourse={selectedCourse}
-                onBackToClasses={() => handleClassClick(null)}
-                onBackToCourses={() => handleCourseClick(null)}
-                onLogout={handleLogout}
+                    <Header
+            userStats={userStats}
+            selectedClass={selectedClass}
+            selectedCourse={selectedCourse}
+            onBackToClasses={() => handleClassClick(null)}
+            onBackToCourses={() => handleCourseClick(null)}
+            onLogout={handleLogout}
                 onShowProfile={handleShowProfile}
-                onShowLeaderboard={async () => {
-                    setShowLeaderboard(true)
-                    try {
+            onShowLeaderboard={async () => {
+                setShowLeaderboard(true)
+                try {
                         // Fetch all users for full leaderboard (limit=0 returns all)
                         const data = await getLeaderboard(0)
-                        setLeaderboardData(data)
-                        if (userId) {
-                            const rank = await getUserRank(parseInt(userId))
-                            setUserRank(rank)
-                        }
-                    } catch (error) {
-                        console.error('Error fetching leaderboard:', error)
+                    setLeaderboardData(data)
+                    if (userId) {
+                        const rank = await getUserRank(parseInt(userId))
+                        setUserRank(rank)
                     }
-                }}
-                onShowLevelInfo={async () => {
-                    setShowLevelInfo(true)
-                    if (userId && classes.length > 0) {
-                        try {
-                            const progressPromises = classes.map(async (cls) => {
-                                try {
-                                    const courses = await getClassCourses(cls.id, userId)
-                                    const completedCourses = courses.filter((c: CourseOut) => c.progress?.is_completed).length
-                                    const totalCourses = courses.length
-                                    const progressPercent = totalCourses > 0 ? (completedCourses / totalCourses) * 100 : 0
-                                    return {
-                                        classId: cls.id,
-                                        className: cls.name,
-                                        completedCourses,
-                                        totalCourses,
-                                        progressPercent,
-                                        unlocked: cls.unlocked,
-                                        courses: courses
-                                    }
-                                } catch (error) {
-                                    return {
-                                        classId: cls.id,
-                                        className: cls.name,
-                                        completedCourses: 0,
-                                        totalCourses: 0,
-                                        progressPercent: 0,
-                                        unlocked: cls.unlocked,
-                                        courses: []
-                                    }
+                } catch (error) {
+                    console.error('Error fetching leaderboard:', error)
+                }
+            }}
+            onShowLevelInfo={async () => {
+                setShowLevelInfo(true)
+                if (userId && classes.length > 0) {
+                    try {
+                        const progressPromises = classes.map(async (cls) => {
+                            try {
+                                const courses = await getClassCourses(cls.id, userId)
+                                const completedCourses = courses.filter((c: CourseOut) => c.progress?.is_completed).length
+                                const totalCourses = courses.length
+                                const progressPercent = totalCourses > 0 ? (completedCourses / totalCourses) * 100 : 0
+                                return {
+                                    classId: cls.id,
+                                    className: cls.name,
+                                    completedCourses,
+                                    totalCourses,
+                                    progressPercent,
+                                    unlocked: cls.unlocked,
+                                    courses: courses
                                 }
-                            })
-                            const progressData = await Promise.all(progressPromises)
-                            setClassProgressData(progressData)
-                        } catch (error) {
-                            console.error('Error fetching class progress:', error)
-                        }
+                            } catch (error) {
+                                return {
+                                    classId: cls.id,
+                                    className: cls.name,
+                                    completedCourses: 0,
+                                    totalCourses: 0,
+                                    progressPercent: 0,
+                                    unlocked: cls.unlocked,
+                                    courses: []
+                                }
+                            }
+                        })
+                        const progressData = await Promise.all(progressPromises)
+                        setClassProgressData(progressData)
+                    } catch (error) {
+                        console.error('Error fetching class progress:', error)
                     }
-                }}
-            />
+                }
+            }}
+        />
 
-            {/* MAIN CONTENT SECTION */}
+                        {/* MAIN CONTENT SECTION */}
             <main className="main">
-                <MainContent
+                <MainContent 
                     isLoading={isLoading}
                     classes={classes}
                     selectedClass={selectedClass}
@@ -1732,7 +1732,7 @@ function App() {
                                 {/* Personal Information */}
                                 <div className="profile-section-enhanced">
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                        <h3 className="profile-section-title">📋 Informacione Personale</h3>
+                                    <h3 className="profile-section-title">📋 Informacione Personale</h3>
                                         {!isEditingProfile ? (
                                             <button 
                                                 className="profile-edit-btn"
@@ -1817,8 +1817,8 @@ function App() {
                                             <span className="info-label">👤 Username:</span>
                                             <span className="info-value">{userProfile?.username || localStorage.getItem('username') || 'N/A'}</span>
                                         </div>
-                                        <div className="profile-info-item">
-                                            <span className="info-label">📧 Email:</span>
+                                            <div className="profile-info-item">
+                                                <span className="info-label">📧 Email:</span>
                                             {isEditingProfile ? (
                                                 <input
                                                     type="email"
@@ -1837,9 +1837,9 @@ function App() {
                                             ) : (
                                                 <span className="info-value">{userProfile?.email || 'Nuk është vendosur'}</span>
                                             )}
-                                        </div>
-                                        <div className="profile-info-item">
-                                            <span className="info-label">🎂 Mosha:</span>
+                                            </div>
+                                            <div className="profile-info-item">
+                                                <span className="info-label">🎂 Mosha:</span>
                                             {isEditingProfile ? (
                                                 <input
                                                     type="number"
@@ -1860,7 +1860,7 @@ function App() {
                                             ) : (
                                                 <span className="info-value">{userProfile?.age ? `${userProfile.age} vjeç` : 'Nuk është vendosur'}</span>
                                             )}
-                                        </div>
+                                            </div>
                                         <div className="profile-info-item">
                                             <span className="info-label">📅 Data e lindjes:</span>
                                             {isEditingProfile ? (
@@ -2494,16 +2494,16 @@ function MainContent({
                                             {classData.order_index}
                                         </span>
                                         <span className="class-label">{classData.name}</span>
-                                    </div>
+                                        </div>
                                     <div className="class-item-right">
                                         {classData.unlocked ? (
                                             <div className="progress-mini" title={`${Math.round(progress)}%`}>
                                                 <div className="progress-mini-fill" style={{ width: `${progress}%` }}></div>
-                                            </div>
+                                    </div>
                                         ) : (
                                             <span className="lock-mini">🔒</span>
                                         )}
-                                    </div>
+                                        </div>
                                 </div>
                             )
                         })}
@@ -2524,12 +2524,12 @@ function MainContent({
                                 <div className="stat-row-compact">
                                     <span className="stat-label-compact">Saktësia</span>
                                     <span className="stat-value-compact">{Math.round(aiRecommendations.accuracy * 100)}%</span>
-                                </div>
+                                        </div>
                                 {adaptiveDifficulty && (
                                     <div className="stat-row-compact">
                                         <span className="stat-label-compact">Nivel</span>
                                         <span className="stat-value-compact">{adaptiveDifficulty.multiplier}x</span>
-                                    </div>
+                                            </div>
                                 )}
                                 {aiCoach && (
                                     <div className="stat-row-compact">
@@ -2537,10 +2537,10 @@ function MainContent({
                                         <span className="stat-value-compact">{aiCoach.total_attempts_analyzed}</span>
                                     </div>
                                 )}
-                            </div>
-                        )}
-                    </div>
-                )}
+                                    </div>
+                                )}
+                                    </div>
+                                )}
 
                 {/* Compact Gamification */}
                 {userId && userStreak && (
@@ -2550,13 +2550,13 @@ function MainContent({
                             <button className="toggle-btn-compact" onClick={() => setShowGamification(!showGamification)}>
                                 {showGamification ? '−' : '+'}
                             </button>
-                        </div>
+                                        </div>
                         <div className="gamification-compact">
                             <div className="streak-compact">
                                 <span className="streak-fire">🔥</span>
                                 <span className="streak-num">{userStreak.current_streak}</span>
                                 <span className="streak-txt">ditë</span>
-                            </div>
+                                                </div>
                             {showGamification && (
                                 <>
                                     {dailyChallenge && dailyChallenge.user_progress && (
@@ -2567,17 +2567,17 @@ function MainContent({
                                                     className="challenge-fill-compact"
                                                     style={{ width: `${Math.min(100, (dailyChallenge.user_progress.current_value / (dailyChallenge.target_value || 1)) * 100)}%` }}
                                                 ></div>
-                                            </div>
-                                            <span className="challenge-count">{dailyChallenge.user_progress.current_value}/{dailyChallenge.target_value}</span>
                                         </div>
-                                    )}
+                                            <span className="challenge-count">{dailyChallenge.user_progress.current_value}/{dailyChallenge.target_value}</span>
+                                    </div>
+                                )}
                                     {userAchievements && userAchievements.total_achievements > 0 && (
                                         <div className="achievements-compact">
                                             <span>🏅 {userAchievements.total_achievements} arritje</span>
-                                        </div>
+                            </div>
                                     )}
                                 </>
-                            )}
+                        )}
                         </div>
                     </div>
                 )}

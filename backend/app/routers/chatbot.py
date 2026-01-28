@@ -170,7 +170,7 @@ def _get_contextual_response(query: str, user_id: Optional[str], db: Optional[Se
     if any(word in query_norm for word in ["filloj", "start", "regjistro", "regjistr", "begin"]):
         steps = PLATFORM_KNOWLEDGE['how_to_use']['getting_started']
         return {
-            "response": "**Si të fillosh:**\n\n" + "\n".join(f"{i+1}. {step}" for i, step in enumerate(steps)),
+            "response": "Si të fillosh:\n\n" + "\n".join(f"{i+1}. {step}" for i, step in enumerate(steps)),
             "suggestions": ["Si plotësoj ushtrime?", "Si hap klasën tjetër?"],
             "related_topics": ["Regjistrim", "Identifikim", "Klasa 1"]
         }
@@ -178,7 +178,7 @@ def _get_contextual_response(query: str, user_id: Optional[str], db: Optional[Se
     if any(word in query_norm for word in ["ushtrime", "exercise", "detyra", "plotesoj"]):
         steps = PLATFORM_KNOWLEDGE['how_to_use']['exercises']
         return {
-            "response": "**Si të plotësosh ushtrime:**\n\n" + "\n".join(f"{i+1}. {step}" for i, step in enumerate(steps)),
+            "response": "Si të plotësosh ushtrime:\n\n" + "\n".join(f"{i+1}. {step}" for i, step in enumerate(steps)),
             "suggestions": ["Çfarë nëse gaboj?", "Si përdor audio?"],
             "related_topics": ["Drejtshkrim", "Feedback", "Nivele"]
         }
@@ -187,7 +187,7 @@ def _get_contextual_response(query: str, user_id: Optional[str], db: Optional[Se
         tips = list(PLATFORM_KNOWLEDGE['grammar_tips'].items())
         tip = random.choice(tips)
         return {
-            "response": f"**Këshillë për drejtshkrim:**\n\n**{tip[0]}:** {tip[1]}",
+            "response": f"Këshillë për drejtshkrim:\n\n{tip[0]}: {tip[1]}",
             "suggestions": ["Më trego këshilla të tjera", "Si përmirësoj drejtshkrimin?"],
             "related_topics": ["Gramatikë Shqipe", "AI Coach", "Ushtrime"]
         }
