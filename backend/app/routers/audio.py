@@ -301,13 +301,25 @@ async def get_audio_exercise(
 	try:
 		from ..database import get_db
 		from .. import models
+		from sqlalchemy.orm import Session
+		from fastapi import Depends
 		
-		# Get exercise from database
-		db = next(get_db())
-		exercise = db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
-		
-		if not exercise:
-			raise HTTPException(status_code=404, detail="Exercise not found")
+		# Get exercise from database using dependency injection
+		# Note: This endpoint doesn't use Depends(get_db) in signature, so we need to handle it manually
+		# But we should use a proper session management
+		db_gen = get_db()
+		db = next(db_gen)
+		try:
+			exercise = db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
+			
+			if not exercise:
+				raise HTTPException(status_code=404, detail="Exercise not found")
+		finally:
+			# Close the database session
+			try:
+				next(db_gen, None)
+			except StopIteration:
+				pass
 		
 		# Extract text to be spoken
 		exercise_text = ""

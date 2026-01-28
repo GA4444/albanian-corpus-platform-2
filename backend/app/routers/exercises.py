@@ -56,8 +56,14 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     if not exercise:
         raise HTTPException(status_code=404, detail="Exercise not found")
     
-    # Get the user
-    user = db.query(User).filter(User.id == int(request.user_id)).first()
+    # Get the user - user_id can be string or int
+    try:
+        user_id_int = int(request.user_id) if isinstance(request.user_id, str) else request.user_id
+        user = db.query(User).filter(User.id == user_id_int).first()
+    except (ValueError, TypeError):
+        # If user_id is not a valid int, try as string
+        user = db.query(User).filter(User.id == str(request.user_id)).first()
+    
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -154,9 +160,11 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     attempt_created = False
     for attempt_num in range(max_retries):
         try:
+            # Ensure user_id is string (as per Attempt model)
+            user_id_str = str(request.user_id)
             attempt = Attempt(
                 exercise_id=exercise_id,
-                user_id=request.user_id,
+                user_id=user_id_str,
                 response=request.response,
                 is_correct=is_correct,
                 score_delta=points_earned
@@ -184,15 +192,16 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     if not attempt_created:
         raise HTTPException(status_code=500, detail="Failed to create attempt record")
     
-    # Get or create progress record
+    # Get or create progress record - ensure user_id is string
+    user_id_str = str(request.user_id)
     progress = db.query(Progress).filter(
-        Progress.user_id == request.user_id,
+        Progress.user_id == user_id_str,
         Progress.level_id == exercise.level_id
     ).first()
     
     if not progress:
         progress = Progress(
-            user_id=request.user_id,
+            user_id=user_id_str,
             category=exercise.category,
             level_id=exercise.level_id,
             course_id=exercise.course_id,
@@ -222,7 +231,7 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     
     # Get all progress records for this level
     level_progress = db.query(Progress).filter(
-        Progress.user_id == request.user_id,
+        Progress.user_id == user_id_str,
         Progress.level_id == exercise.level_id
     ).first()
     
@@ -242,7 +251,7 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     # Check if course is completed (all levels in course completed)
     course_levels = db.query(Level).filter(Level.course_id == exercise.course_id).all()
     completed_levels = db.query(Progress).filter(
-        Progress.user_id == request.user_id,
+        Progress.user_id == user_id_str,
         Progress.course_id == exercise.course_id,
         Progress.completed == True
     ).count()
@@ -258,10 +267,13 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     course_progress = None
     try:
         from .course_progression import update_course_progress
-        course_progress = update_course_progress(db, int(request.user_id), exercise.course_id)
+        # Convert user_id to int for course_progression functions that expect int
+        user_id_int = int(user_id_str) if user_id_str.isdigit() else None
+        if user_id_int:
+            course_progress = update_course_progress(db, user_id_int, exercise.course_id)
     except Exception as e:
         # Log but continue – the main flow (answer evaluation) must not fail
-        print(f"[WARNING] Course progress update error for user {request.user_id}, course {exercise.course_id}: {e}")
+        print(f"[WARNING] Course progress update error for user {user_id_str}, course {exercise.course_id}: {e}")
     
     # ========== GAMIFICATION INTEGRATION ==========
     try:
@@ -273,21 +285,21 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
         )
         
         # 1. Update streak (every submission)
-        update_user_streak(db, request.user_id)
+        update_user_streak(db, user_id_str)
         
         # 2. Update daily challenge progress
-        update_daily_challenge_progress(db, request.user_id, "complete_n_exercises", increment=1)
+        update_daily_challenge_progress(db, user_id_str, "complete_n_exercises", increment=1)
         
         # 3. If perfect answer, update perfect_accuracy challenge
         if is_correct:
-            update_daily_challenge_progress(db, request.user_id, "perfect_accuracy", increment=1)
+            update_daily_challenge_progress(db, user_id_str, "perfect_accuracy", increment=1)
         
         # 4. Check and award any achievements earned
-        check_and_award_achievements(db, request.user_id)
+        check_and_award_achievements(db, user_id_str)
         
         # 5. If answer is wrong, create SRS card for spaced repetition
         if not is_correct:
-            create_srs_card_for_mistake(db, request.user_id, exercise_id)
+            create_srs_card_for_mistake(db, user_id_str, exercise_id)
     
     except Exception as e:
         # Gamification is optional - don't break the main flow if it fails
