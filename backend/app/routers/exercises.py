@@ -8,6 +8,7 @@ from typing import List
 from datetime import datetime
 import unicodedata
 import re
+import json
 
 router = APIRouter()
 
@@ -42,53 +43,78 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
         raise HTTPException(status_code=404, detail="User not found")
     
     # Check if answer is correct (case-insensitive, normalize whitespace, normalize unicode)
-    # Ensure we have string values (handle None cases)
-    exercise_answer_str = str(exercise.answer) if exercise.answer else ""
+    # Handle potential JSON-encoded answers
+    exercise_answer_raw = exercise.answer if exercise.answer else ""
+    
+    # Try to parse as JSON first (for multi-answer questions)
+    try:
+        if isinstance(exercise_answer_raw, str) and exercise_answer_raw.strip().startswith('['):
+            answer_list = json.loads(exercise_answer_raw)
+            if isinstance(answer_list, list) and len(answer_list) > 0:
+                exercise_answer_str = str(answer_list[0])  # Use first answer if multiple
+            else:
+                exercise_answer_str = str(exercise_answer_raw)
+        else:
+            exercise_answer_str = str(exercise_answer_raw)
+    except (json.JSONDecodeError, ValueError):
+        exercise_answer_str = str(exercise_answer_raw)
+    
     user_response_str = str(request.response) if request.response else ""
     
-    # Normalize Unicode and convert to lowercase
+    # Normalize Unicode and convert to lowercase (always compute for logging)
     exercise_answer_normalized = unicodedata.normalize('NFKC', exercise_answer_str.lower().strip())
     user_response_normalized = unicodedata.normalize('NFKC', user_response_str.lower().strip())
     
     # Normalize whitespace: replace multiple spaces/tabs/newlines with single space
-    exercise_answer_clean = re.sub(r'\s+', ' ', exercise_answer_normalized)
-    user_response_clean = re.sub(r'\s+', ' ', user_response_normalized)
+    exercise_answer_clean = re.sub(r'\s+', ' ', exercise_answer_normalized).strip()
+    user_response_clean = re.sub(r'\s+', ' ', user_response_normalized).strip()
     
-    # Remove any remaining leading/trailing whitespace after normalization
-    exercise_answer_clean = exercise_answer_clean.strip()
-    user_response_clean = user_response_clean.strip()
-    
-    # First try: exact match after normalization
-    is_correct = exercise_answer_clean == user_response_clean
-    
-    # If not matching, try removing all spaces (for cases where user adds spaces or answer has spaces)
-    if not is_correct:
+    # First, try simple case-insensitive comparison (fastest path)
+    is_correct = False
+    if exercise_answer_str.lower().strip() == user_response_str.lower().strip():
+        is_correct = True
+    elif exercise_answer_clean == user_response_clean:
+        # Try exact match after normalization
+        is_correct = True
+    else:
+        # If not matching, try removing all spaces (for cases where user adds spaces or answer has spaces)
         exercise_no_spaces = ''.join(exercise_answer_clean.split())
         user_no_spaces = ''.join(user_response_clean.split())
         # Accept if they match without spaces (handles both "e kuqe" vs "ekuqe" and "zogi" vs "z ogi")
         if exercise_no_spaces == user_no_spaces and exercise_no_spaces:
             is_correct = True
     
-    # Log for debugging when answer doesn't match (only in development)
+    # Always log for debugging (will show in Render logs)
+    
+    print(f"[ANSWER_CHECK] Exercise {exercise_id} (Level {exercise.level_id}):")
+    print(f"  Original answer from DB: '{exercise.answer}'")
+    print(f"  Processed answer: '{exercise_answer_clean}'")
+    print(f"  User response: '{request.response}'")
+    print(f"  Processed response: '{user_response_clean}'")
+    print(f"  Match result: {is_correct}")
+    
     if not is_correct:
-        print(f"[DEBUG] Answer mismatch for exercise {exercise_id}:")
-        print(f"  Exercise answer (original): '{exercise.answer}' (type: {type(exercise.answer)})")
-        print(f"  Exercise answer (cleaned): '{exercise_answer_clean}' (len={len(exercise_answer_clean)})")
-        print(f"  User response (original): '{request.response}' (type: {type(request.response)})")
-        print(f"  User response (cleaned): '{user_response_clean}' (len={len(user_response_clean)})")
-        print(f"  Exercise bytes: {exercise_answer_clean.encode('utf-8')}")
-        print(f"  User bytes: {user_response_clean.encode('utf-8')}")
-        print(f"  Characters comparison:")
-        max_len = max(len(exercise_answer_clean), len(user_response_clean))
-        for i in range(max_len):
-            ec = exercise_answer_clean[i] if i < len(exercise_answer_clean) else None
-            uc = user_response_clean[i] if i < len(user_response_clean) else None
-            if ec != uc:
-                ec_str = f"'{ec}' (code: {ord(ec)})" if ec else "None"
-                uc_str = f"'{uc}' (code: {ord(uc)})" if uc else "None"
-                print(f"    Position {i}: {ec_str} vs {uc_str}")
+        print(f"  [MISMATCH DETAILS]:")
+        print(f"    Exercise bytes: {exercise_answer_clean.encode('utf-8')}")
+        print(f"    User bytes: {user_response_clean.encode('utf-8')}")
+        print(f"    Length: {len(exercise_answer_clean)} vs {len(user_response_clean)}")
         if len(exercise_answer_clean) != len(user_response_clean):
-            print(f"  Length mismatch: {len(exercise_answer_clean)} vs {len(user_response_clean)}")
+            print(f"    Length mismatch!")
+        else:
+            print(f"    Character-by-character comparison:")
+            max_len = max(len(exercise_answer_clean), len(user_response_clean))
+            diff_count = 0
+            for i in range(max_len):
+                ec = exercise_answer_clean[i] if i < len(exercise_answer_clean) else None
+                uc = user_response_clean[i] if i < len(user_response_clean) else None
+                if ec != uc:
+                    diff_count += 1
+                    if diff_count <= 5:  # Show first 5 differences
+                        ec_str = f"'{ec}' (U+{ord(ec):04X})" if ec else "None"
+                        uc_str = f"'{uc}' (U+{ord(uc):04X})" if uc else "None"
+                        print(f"      Pos {i}: {ec_str} vs {uc_str}")
+            if diff_count > 5:
+                print(f"    ... and {diff_count - 5} more differences")
     
     # Calculate points (use exercise.points directly)
     points_earned = exercise.points if is_correct else 0
