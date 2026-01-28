@@ -57,6 +57,9 @@ jobs:
     - name: Verify Node version
       run: node --version
     
+    - name: Clear npm cache
+      run: npm cache clean --force
+    
     - name: Install dependencies
       run: npm install
     
