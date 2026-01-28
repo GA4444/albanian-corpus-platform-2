@@ -256,3 +256,57 @@ def fix_users_sequence(db: Session = Depends(get_db)):
 		raise HTTPException(status_code=500, detail=f"Failed to fix sequence: {str(e)}")
 
 
+@router.post("/fix-all-sequences")
+def fix_all_sequences(db: Session = Depends(get_db)):
+	"""Fix PostgreSQL sequences for all tables - admin utility"""
+	tables = [
+		"users", "courses", "levels", "exercises", 
+		"attempts", "progress", "course_progress",
+		"achievements", "user_achievements", "daily_challenges",
+		"user_daily_progress", "srs_cards", "chat_sessions", "chat_messages"
+	]
+	
+	results = {}
+	
+	for table_name in tables:
+		try:
+			# Get max ID
+			result = db.execute(text(f"SELECT COALESCE(MAX(id), 0) FROM {table_name}"))
+			max_id = result.scalar()
+			
+			# Get current sequence value
+			try:
+				result = db.execute(text(f"SELECT last_value FROM {table_name}_id_seq"))
+				current_seq = result.scalar()
+			except:
+				# Sequence might not exist yet
+				current_seq = 0
+			
+			if max_id >= current_seq:
+				new_seq_value = max_id + 1
+				db.execute(text(f"SELECT setval('{table_name}_id_seq', {new_seq_value}, false)"))
+				results[table_name] = {
+					"status": "fixed",
+					"max_id": max_id,
+					"old_sequence": current_seq,
+					"new_sequence": new_seq_value
+				}
+			else:
+				results[table_name] = {
+					"status": "ok",
+					"max_id": max_id,
+					"current_sequence": current_seq
+				}
+		except Exception as e:
+			results[table_name] = {
+				"status": "error",
+				"error": str(e)
+			}
+	
+	db.commit()
+	return {
+		"message": "Sequence check completed",
+		"results": results
+	}
+
+

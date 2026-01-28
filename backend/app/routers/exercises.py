@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_, distinct
+from sqlalchemy import func, and_, distinct, text
+from sqlalchemy.exc import IntegrityError
 from app.database import get_db
 from app.models import Exercise, Progress, User, Course, Level, Attempt, CourseProgress
 from app.schemas import SubmitRequest, SubmitResult, ExerciseOut
@@ -11,6 +12,24 @@ import re
 import json
 
 router = APIRouter()
+
+def fix_sequence_if_needed(db: Session, table_name: str, error: Exception) -> bool:
+	"""Fix PostgreSQL sequence if duplicate key error occurs"""
+	error_str = str(error.orig) if hasattr(error, 'orig') else str(error)
+	
+	# Check if it's a sequence issue (duplicate key on primary key)
+	if "duplicate key value violates unique constraint" in error_str and f"{table_name}_pkey" in error_str:
+		try:
+			result = db.execute(text(f"SELECT COALESCE(MAX(id), 0) FROM {table_name}"))
+			max_id = result.scalar()
+			db.execute(text(f"SELECT setval('{table_name}_id_seq', {max_id + 1}, false)"))
+			db.commit()
+			print(f"[FIXED] Reset {table_name}_id_seq to {max_id + 1}")
+			return True
+		except Exception as seq_error:
+			print(f"[ERROR] Failed to fix {table_name} sequence: {seq_error}")
+			return False
+	return False
 
 @router.get("/public-stats")
 def get_public_stats(db: Session = Depends(get_db)):
@@ -130,14 +149,40 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     points_earned = exercise.points if is_correct else 0
     
     # Create attempt record for course progress tracking
-    attempt = Attempt(
-        exercise_id=exercise_id,
-        user_id=request.user_id,
-        response=request.response,
-        is_correct=is_correct,
-        score_delta=points_earned
-    )
-    db.add(attempt)
+    # Handle sequence issues automatically
+    max_retries = 2
+    attempt_created = False
+    for attempt_num in range(max_retries):
+        try:
+            attempt = Attempt(
+                exercise_id=exercise_id,
+                user_id=request.user_id,
+                response=request.response,
+                is_correct=is_correct,
+                score_delta=points_earned
+            )
+            db.add(attempt)
+            db.flush()  # Flush to trigger sequence, but don't commit yet
+            attempt_created = True
+            break
+        except IntegrityError as e:
+            db.rollback()
+            if attempt_num < max_retries - 1 and fix_sequence_if_needed(db, "attempts", e):
+                continue  # Retry
+            else:
+                print(f"[ERROR] Failed to create attempt after {max_retries} tries: {e}")
+                raise HTTPException(status_code=500, detail="Failed to save attempt. Please try again.")
+        except Exception as e:
+            db.rollback()
+            error_str = str(e)
+            if "duplicate key value violates unique constraint" in error_str and "attempts_pkey" in error_str:
+                if attempt_num < max_retries - 1 and fix_sequence_if_needed(db, "attempts", e):
+                    continue  # Retry
+            print(f"[ERROR] Failed to create attempt: {e}")
+            raise HTTPException(status_code=500, detail="Failed to save attempt. Please try again.")
+    
+    if not attempt_created:
+        raise HTTPException(status_code=500, detail="Failed to create attempt record")
     
     # Get or create progress record
     progress = db.query(Progress).filter(
