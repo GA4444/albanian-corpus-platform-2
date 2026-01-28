@@ -61,30 +61,38 @@ async def submit_answer(exercise_id: int, request: SubmitRequest, db: Session = 
     
     user_response_str = str(request.response) if request.response else ""
     
-    # Normalize Unicode and convert to lowercase (always compute for logging)
-    exercise_answer_normalized = unicodedata.normalize('NFKC', exercise_answer_str.lower().strip())
-    user_response_normalized = unicodedata.normalize('NFKC', user_response_str.lower().strip())
+    # Helper function to normalize text for comparison
+    def normalize_for_comparison(text: str) -> str:
+        """Normalize text: lowercase, Unicode NFKC, remove extra whitespace"""
+        if not text:
+            return ""
+        # Convert to string and strip
+        text = str(text).strip()
+        # Normalize Unicode (NFKC handles compatibility characters)
+        text = unicodedata.normalize('NFKC', text)
+        # Convert to lowercase
+        text = text.lower()
+        # Normalize whitespace: replace multiple spaces/tabs/newlines with single space
+        text = re.sub(r'\s+', ' ', text)
+        # Final strip
+        return text.strip()
     
-    # Normalize whitespace: replace multiple spaces/tabs/newlines with single space
-    exercise_answer_clean = re.sub(r'\s+', ' ', exercise_answer_normalized).strip()
-    user_response_clean = re.sub(r'\s+', ' ', user_response_normalized).strip()
+    # Normalize both answers
+    exercise_answer_clean = normalize_for_comparison(exercise_answer_str)
+    user_response_clean = normalize_for_comparison(user_response_str)
     
     # Compare answers using normalized versions
     is_correct = False
     
-    # Method 1: Exact match after normalization (most reliable)
+    # Method 1: Exact match after full normalization (most reliable)
     if exercise_answer_clean == user_response_clean:
         is_correct = True
-    else:
-        # Method 2: Try removing all spaces (for cases where user adds spaces or answer has spaces)
+    elif exercise_answer_clean and user_response_clean:
+        # Method 2: Try removing all spaces (for cases like "e kuqe" vs "ekuqe")
         exercise_no_spaces = ''.join(exercise_answer_clean.split())
         user_no_spaces = ''.join(user_response_clean.split())
         if exercise_no_spaces == user_no_spaces and exercise_no_spaces:
             is_correct = True
-        else:
-            # Method 3: Try simple case-insensitive comparison as fallback
-            if exercise_answer_str.lower().strip() == user_response_str.lower().strip():
-                is_correct = True
     
     # Always log for debugging (will show in Render logs)
     
