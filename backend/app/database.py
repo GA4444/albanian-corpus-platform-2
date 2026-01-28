@@ -78,9 +78,22 @@ def get_db():
 		db.rollback()
 		raise  # Re-raise to let endpoint handle it
 	except Exception as e:
+		# Check if it's a psycopg2 UniqueViolation (which should be IntegrityError)
+		error_type = type(e).__name__
+		error_str = str(e)
+		
+		# Check if it's a unique constraint violation that should be handled as IntegrityError
+		if "UniqueViolation" in error_type or ("duplicate key value violates unique constraint" in error_str):
+			# Convert to IntegrityError-like behavior - let it propagate
+			logger.warning(f"Unique constraint violation (will be handled by endpoint): {e}")
+			if hasattr(e, 'orig'):
+				logger.warning(f"Original error: {e.orig}")
+			db.rollback()
+			raise  # Re-raise to let endpoint handle it
+		
 		logger.error(f"Unexpected database error: {e}")
-		logger.error(f"Error type: {type(e).__name__}")
-		# Log more details if it's an IntegrityError
+		logger.error(f"Error type: {error_type}")
+		# Log more details
 		if hasattr(e, 'orig'):
 			logger.error(f"Original error: {e.orig}")
 		if hasattr(e, 'params'):
@@ -89,7 +102,7 @@ def get_db():
 		logger.error(f"Traceback: {traceback.format_exc()}")
 		db.rollback()
 		# Don't raise HTTPException here - let the calling code handle it
-		# This allows IntegrityError to propagate to the register endpoint's handler
+		# This allows IntegrityError to propagate to the endpoint handlers
 		raise
 	finally:
 		db.close()
