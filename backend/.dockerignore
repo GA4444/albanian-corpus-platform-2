@@ -19,3 +19,5 @@ dist/
 build/
 .vscode/
 .idea/
+# Exclude submodule directory to avoid git submodule warnings
+../albanian-corpus-platform-2/
