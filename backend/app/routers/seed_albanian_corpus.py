@@ -7,6 +7,44 @@ import json
 router = APIRouter()
 
 
+def cleanup_class_data(db: Session, class_name_pattern: str):
+    """Helper function to properly clean up class data with PostgreSQL compatibility"""
+    # Find class IDs matching the pattern
+    class_ids = db.query(Course.id).filter(
+        Course.name.like(class_name_pattern)
+    ).all()
+    class_ids = [c[0] for c in class_ids]
+    
+    if not class_ids:
+        return
+    
+    # Get all course IDs under these classes
+    course_ids = db.query(Course.id).filter(Course.parent_class_id.in_(class_ids)).all()
+    course_ids = [c[0] for c in course_ids]
+    all_course_ids = class_ids + course_ids
+    
+    if all_course_ids:
+        # Delete exercises first (foreign key constraint)
+        db.query(Exercise).filter(Exercise.course_id.in_(all_course_ids)).delete(synchronize_session=False)
+        
+        # Get level IDs and delete exercises linked to levels
+        level_ids = db.query(Level.id).filter(Level.course_id.in_(all_course_ids)).all()
+        level_ids = [l[0] for l in level_ids]
+        if level_ids:
+            db.query(Exercise).filter(Exercise.level_id.in_(level_ids)).delete(synchronize_session=False)
+        
+        # Delete levels
+        db.query(Level).filter(Level.course_id.in_(all_course_ids)).delete(synchronize_session=False)
+        
+        # Delete child courses
+        db.query(Course).filter(Course.parent_class_id.in_(class_ids)).delete(synchronize_session=False)
+        
+        # Delete parent classes
+        db.query(Course).filter(Course.id.in_(class_ids)).delete(synchronize_session=False)
+        
+        db.commit()
+
+
 @router.post("/seed-12-courses")
 def seed_twelve_courses():
     """Seed exactly 12 courses for Class 1 with the new structure"""
@@ -39,16 +77,9 @@ def seed_twelve_courses():
 def seed_first_class_exercises(db: Session):
     """Seed the first class level with exactly 12 courses and their exercises"""
     
-    # Clear existing data for Class 1
-    db.query(Exercise).filter(Exercise.course_id.in_(
-        db.query(Course.id).filter(Course.name.like("Klasa e Parë%"))
-    )).delete()
-    
-    db.query(Level).filter(Level.course_id.in_(
-        db.query(Course.id).filter(Course.name.like("Klasa e Parë%"))
-    )).delete()
-    
-    db.query(Course).filter(Course.name.like("Klasa e Parë%")).delete()
+    # Clear existing data for Class 1 (handle both naming conventions)
+    cleanup_class_data(db, "Klasa 1%")
+    cleanup_class_data(db, "Klasa e Parë%")
     
     # Create the first class course
     first_class = Course(
@@ -1074,10 +1105,7 @@ def seed_third_class_exercises(db: Session):
     """Seed the third class with the same 12-category structure, advanced content"""
 
     # Clear existing data for Class 3
-    class_ids_to_clear = db.query(Course.id).filter(Course.name.like("Klasa 3%"))
-    db.query(Exercise).filter(Exercise.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Level).filter(Level.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Course).filter(Course.name.like("Klasa 3%")).delete()
+    cleanup_class_data(db, "Klasa 3%")
 
     # Create Class 3
     third_class = Course(
@@ -1518,10 +1546,7 @@ def seed_fourth_class_exercises(db: Session):
     """Seed the fourth class with the same 12-category structure, even more advanced content"""
 
     # Clear existing data for Class 4
-    class_ids_to_clear = db.query(Course.id).filter(Course.name.like("Klasa 4%"))
-    db.query(Exercise).filter(Exercise.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Level).filter(Level.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Course).filter(Course.name.like("Klasa 4%")).delete()
+    cleanup_class_data(db, "Klasa 4%")
 
     # Create Class 4
     fourth_class = Course(
@@ -2012,10 +2037,7 @@ def seed_fifth_class_exercises(db: Session):
     """Seed the fifth class with the same 12-category structure, very advanced content"""
 
     # Clear existing data for Class 5
-    class_ids_to_clear = db.query(Course.id).filter(Course.name.like("Klasa 5%"))
-    db.query(Exercise).filter(Exercise.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Level).filter(Level.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Course).filter(Course.name.like("Klasa 5%")).delete()
+    cleanup_class_data(db, "Klasa 5%")
 
     # Create Class 5
     fifth_class = Course(
@@ -2266,10 +2288,7 @@ def seed_sixth_class_exercises(db: Session):
     """Seed the sixth class with the same 12-category structure, extremely advanced content"""
 
     # Clear existing data for Class 6
-    class_ids_to_clear = db.query(Course.id).filter(Course.name.like("Klasa 6%"))
-    db.query(Exercise).filter(Exercise.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Level).filter(Level.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Course).filter(Course.name.like("Klasa 6%")).delete()
+    cleanup_class_data(db, "Klasa 6%")
 
     # Create Class 6
     sixth_class = Course(
@@ -2521,10 +2540,7 @@ def seed_seventh_class_exercises(db: Session):
     """Seed the seventh class with the same 12-category structure, highly advanced content"""
 
     # Clear existing data for Class 7
-    class_ids_to_clear = db.query(Course.id).filter(Course.name.like("Klasa 7%"))
-    db.query(Exercise).filter(Exercise.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Level).filter(Level.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Course).filter(Course.name.like("Klasa 7%")).delete()
+    cleanup_class_data(db, "Klasa 7%")
 
     # Create Class 7
     seventh_class = Course(
@@ -2776,10 +2792,7 @@ def seed_eighth_class_exercises(db: Session):
     """Seed the eighth class with the same 12-category structure, most advanced content"""
 
     # Clear existing data for Class 8
-    class_ids_to_clear = db.query(Course.id).filter(Course.name.like("Klasa 8%"))
-    db.query(Exercise).filter(Exercise.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Level).filter(Level.course_id.in_(class_ids_to_clear)).delete()
-    db.query(Course).filter(Course.name.like("Klasa 8%")).delete()
+    cleanup_class_data(db, "Klasa 8%")
 
     # Create Class 8
     eighth_class = Course(
