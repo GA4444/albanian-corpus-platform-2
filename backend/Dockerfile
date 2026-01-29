@@ -45,9 +45,10 @@ COPY . .
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
+ENV PORT=8000
 
-# Expose port
+# Expose port (Render uses PORT env variable)
 EXPOSE 8000
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the application using shell form to allow environment variable expansion
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
