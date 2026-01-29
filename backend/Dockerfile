@@ -32,7 +32,8 @@ RUN pip install --no-cache-dir \
     "requests>=2.31.0" \
     "openai>=1.3.0" \
     "anthropic>=0.8.0" \
-    "numpy<2"
+    numpy==1.26.4 \
+    psycopg2-binary==2.9.9
 
 # Note: PaddleOCR is intentionally excluded from Docker build to speed up deployment
 # The OCR functionality works perfectly with Tesseract (already installed above)

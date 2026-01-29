@@ -14,9 +14,11 @@ azure-cognitiveservices-speech==1.34.0
 requests>=2.31.0
 openai>=1.3.0
 anthropic>=0.8.0
-# NumPy <2 required for PaddleOCR/OpenCV compatibility
-numpy<2
-# Optional OCR fallback (handwriting)
-paddlepaddle==2.6.2
-paddleocr==2.7.3
+# NumPy 1.x required for PaddleOCR/OpenCV compatibility
+# Pin to specific version to avoid ABI mismatch
+numpy==1.26.4
+# Optional OCR fallback (handwriting) - may be skipped in Docker
+# paddlepaddle==2.6.2
+# paddleocr==2.7.3
+psycopg2-binary==2.9.9
 
