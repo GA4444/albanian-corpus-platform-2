@@ -338,7 +338,56 @@ async def get_course_levels(course_id: int, db: Session = Depends(get_db)):
 async def get_level_exercises(level_id: int, db: Session = Depends(get_db)):
     # Only return fields defined in ExerciseOut (answer is excluded)
     exercises = db.query(Exercise).filter(Exercise.level_id == level_id).order_by(Exercise.order_index).all()
+    print(f"[DEBUG] Level {level_id}: Found {len(exercises)} exercises")
     return exercises
+
+@router.get("/debug/database-structure")
+async def debug_database_structure(db: Session = Depends(get_db)):
+    """Debug endpoint to check database structure"""
+    # Get all classes
+    classes = db.query(Course).filter(Course.parent_class_id == None).order_by(Course.order_index).all()
+    
+    result = {
+        "total_classes": len(classes),
+        "total_courses": db.query(Course).filter(Course.parent_class_id != None).count(),
+        "total_levels": db.query(Level).count(),
+        "total_exercises": db.query(Exercise).count(),
+        "classes": []
+    }
+    
+    for cls in classes[:3]:  # First 3 classes
+        class_data = {
+            "id": cls.id,
+            "name": cls.name,
+            "courses": []
+        }
+        
+        # Get courses in this class
+        courses = db.query(Course).filter(Course.parent_class_id == cls.id).order_by(Course.order_index).all()
+        
+        for course in courses[:3]:  # First 3 courses
+            course_data = {
+                "id": course.id,
+                "name": course.name,
+                "levels": []
+            }
+            
+            # Get levels for this course
+            levels = db.query(Level).filter(Level.course_id == course.id).order_by(Level.order_index).all()
+            
+            for level in levels:
+                exercise_count = db.query(Exercise).filter(Exercise.level_id == level.id).count()
+                course_data["levels"].append({
+                    "id": level.id,
+                    "name": level.name,
+                    "exercise_count": exercise_count
+                })
+            
+            class_data["courses"].append(course_data)
+        
+        result["classes"].append(class_data)
+    
+    return result
 
 @router.get("/classes")
 async def get_classes(user_id: str = None, db: Session = Depends(get_db)):
