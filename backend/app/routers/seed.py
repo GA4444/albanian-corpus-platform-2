@@ -41,51 +41,65 @@ def fix_empty_levels():
                 models.Exercise.level_id == level.id
             ).count()
             if exercise_count == 0:
-                empty_levels.append(level)
+                empty_levels.append({"level_id": level.id, "course_id": level.course_id})
         
         fixed_count = 0
+        exercises_added = 0
         
-        for level in empty_levels:
-            # Get the course this level belongs to
-            course = db.query(models.Course).filter(models.Course.id == level.course_id).first()
-            if not course:
+        # Process one level at a time with fresh session
+        for level_info in empty_levels:
+            db2 = SessionLocal()
+            try:
+                level_id = level_info["level_id"]
+                course_id = level_info["course_id"]
+                
+                # Fix sequence again before each batch
+                db2.execute(text("SELECT setval('exercises_id_seq', (SELECT COALESCE(MAX(id), 0) + 1 FROM exercises), false)"))
+                db2.commit()
+                
+                # Create 5 basic exercises for this level - one at a time
+                sample_exercises = [
+                    {"prompt": "Shkruaj fjalën 'shkollë'", "answer": "shkollë"},
+                    {"prompt": "Shkruaj fjalën 'libër'", "answer": "libër"},
+                    {"prompt": "Shkruaj fjalën 'shtëpi'", "answer": "shtëpi"},
+                    {"prompt": "Shkruaj fjalën 'mësues'", "answer": "mësues"},
+                    {"prompt": "Shkruaj fjalën 'nxënës'", "answer": "nxënës"},
+                ]
+                
+                for i, ex_data in enumerate(sample_exercises):
+                    # Insert using raw SQL to avoid ORM batching issues
+                    db2.execute(text("""
+                        INSERT INTO exercises (category, course_id, level_id, prompt, data, answer, points, enabled, order_index)
+                        VALUES (:category, :course_id, :level_id, :prompt, :data, :answer, :points, :enabled, :order_index)
+                    """), {
+                        "category": "VOCABULARY",
+                        "course_id": course_id,
+                        "level_id": level_id,
+                        "prompt": ex_data["prompt"],
+                        "data": json.dumps({"type": "text_input"}),
+                        "answer": ex_data["answer"],
+                        "points": 1,
+                        "enabled": True,
+                        "order_index": i + 1
+                    })
+                    db2.commit()
+                    exercises_added += 1
+                
+                fixed_count += 1
+            except Exception as e:
+                db2.rollback()
+                # Continue with next level even if one fails
                 continue
-            
-            # Determine exercise category based on course name or category
-            category = course.category if course.category else models.CategoryEnum.VOCABULARY
-            
-            # Create 5 basic exercises for this level
-            sample_exercises = [
-                {"prompt": "Shkruaj fjalën 'shkollë'", "answer": "shkollë", "category": models.CategoryEnum.VOCABULARY},
-                {"prompt": "Shkruaj fjalën 'libër'", "answer": "libër", "category": models.CategoryEnum.VOCABULARY},
-                {"prompt": "Shkruaj fjalën 'shtëpi'", "answer": "shtëpi", "category": models.CategoryEnum.VOCABULARY},
-                {"prompt": "Shkruaj fjalën 'mësues'", "answer": "mësues", "category": models.CategoryEnum.VOCABULARY},
-                {"prompt": "Shkruaj fjalën 'nxënës'", "answer": "nxënës", "category": models.CategoryEnum.VOCABULARY},
-            ]
-            
-            for i, ex_data in enumerate(sample_exercises):
-                exercise = models.Exercise(
-                    category=ex_data["category"],
-                    course_id=course.id,
-                    level_id=level.id,
-                    prompt=ex_data["prompt"],
-                    answer=ex_data["answer"],
-                    data=json.dumps({"type": "text_input"}),
-                    points=1,
-                    order_index=i + 1
-                )
-                db.add(exercise)
-            
-            fixed_count += 1
-        
-        db.commit()
+            finally:
+                db2.close()
         
         # Get updated totals
         total_exercises = db.query(models.Exercise).count()
         
         return {
-            "message": f"Fixed {fixed_count} empty levels",
+            "message": f"Fixed {fixed_count} empty levels, added {exercises_added} exercises",
             "levels_fixed": fixed_count,
+            "exercises_added": exercises_added,
             "total_exercises_now": total_exercises
         }
         
