@@ -22,85 +22,51 @@ router = APIRouter()
 @router.get("/seed-all-classes")
 def seed_all_classes_get():
     """Seed ALL classes (1-8) with exercises - GET version for easy browser access"""
-    db = next(get_db())
+    from ..database import SessionLocal
     
+    results = []
+    seed_functions = [
+        (1, seed_first_class_exercises),
+        (2, seed_second_class_exercises),
+        (3, seed_third_class_exercises),
+        (4, seed_fourth_class_exercises),
+        (5, seed_fifth_class_exercises),
+        (6, seed_sixth_class_exercises),
+        (7, seed_seventh_class_exercises),
+        (8, seed_eighth_class_exercises),
+    ]
+    
+    for class_num, seed_func in seed_functions:
+        # Create a fresh session for each class to avoid transaction issues
+        db = SessionLocal()
+        try:
+            course_id = seed_func(db)
+            db.commit()
+            results.append({"class": class_num, "status": "success", "course_id": course_id})
+        except Exception as e:
+            db.rollback()
+            results.append({"class": class_num, "status": "error", "error": str(e)[:200]})
+        finally:
+            db.close()
+    
+    # Get totals with a fresh session
+    db = SessionLocal()
     try:
-        results = []
-        
-        # Seed Class 1
-        try:
-            course_id = seed_first_class_exercises(db)
-            results.append({"class": 1, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 1, "status": "error", "error": str(e)})
-        
-        # Seed Class 2
-        try:
-            course_id = seed_second_class_exercises(db)
-            results.append({"class": 2, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 2, "status": "error", "error": str(e)})
-        
-        # Seed Class 3
-        try:
-            course_id = seed_third_class_exercises(db)
-            results.append({"class": 3, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 3, "status": "error", "error": str(e)})
-        
-        # Seed Class 4
-        try:
-            course_id = seed_fourth_class_exercises(db)
-            results.append({"class": 4, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 4, "status": "error", "error": str(e)})
-        
-        # Seed Class 5
-        try:
-            course_id = seed_fifth_class_exercises(db)
-            results.append({"class": 5, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 5, "status": "error", "error": str(e)})
-        
-        # Seed Class 6
-        try:
-            course_id = seed_sixth_class_exercises(db)
-            results.append({"class": 6, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 6, "status": "error", "error": str(e)})
-        
-        # Seed Class 7
-        try:
-            course_id = seed_seventh_class_exercises(db)
-            results.append({"class": 7, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 7, "status": "error", "error": str(e)})
-        
-        # Seed Class 8
-        try:
-            course_id = seed_eighth_class_exercises(db)
-            results.append({"class": 8, "status": "success", "course_id": course_id})
-        except Exception as e:
-            results.append({"class": 8, "status": "error", "error": str(e)})
-        
-        # Count totals
         total_exercises = db.query(models.Exercise).count()
         total_levels = db.query(models.Level).count()
         total_courses = db.query(models.Course).count()
-        
-        return {
-            "message": "Seeded all classes",
-            "results": results,
-            "totals": {
-                "exercises": total_exercises,
-                "levels": total_levels,
-                "courses": total_courses
-            }
+    finally:
+        db.close()
+    
+    return {
+        "message": "Seeded all classes",
+        "results": results,
+        "totals": {
+            "exercises": total_exercises,
+            "levels": total_levels,
+            "courses": total_courses
         }
-        
-    except Exception as e:
-        db.rollback()
-        return {"error": str(e)}
+    }
 
 
 @router.post("/seed")
