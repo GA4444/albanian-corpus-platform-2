@@ -19,6 +19,78 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 router = APIRouter()
 
 
+@router.get("/fix-empty-levels")
+def fix_empty_levels():
+    """Add exercises to levels that have 0 exercises"""
+    from ..database import SessionLocal
+    import json
+    
+    db = SessionLocal()
+    try:
+        # Find all levels with 0 exercises
+        empty_levels = []
+        all_levels = db.query(models.Level).all()
+        
+        for level in all_levels:
+            exercise_count = db.query(models.Exercise).filter(
+                models.Exercise.level_id == level.id
+            ).count()
+            if exercise_count == 0:
+                empty_levels.append(level)
+        
+        fixed_count = 0
+        
+        for level in empty_levels:
+            # Get the course this level belongs to
+            course = db.query(models.Course).filter(models.Course.id == level.course_id).first()
+            if not course:
+                continue
+            
+            # Determine exercise category based on course name or category
+            category = course.category if course.category else models.CategoryEnum.VOCABULARY
+            
+            # Create 5 basic exercises for this level
+            sample_exercises = [
+                {"prompt": "Shkruaj fjalën 'shkollë'", "answer": "shkollë", "category": models.CategoryEnum.VOCABULARY},
+                {"prompt": "Shkruaj fjalën 'libër'", "answer": "libër", "category": models.CategoryEnum.VOCABULARY},
+                {"prompt": "Shkruaj fjalën 'shtëpi'", "answer": "shtëpi", "category": models.CategoryEnum.VOCABULARY},
+                {"prompt": "Shkruaj fjalën 'mësues'", "answer": "mësues", "category": models.CategoryEnum.VOCABULARY},
+                {"prompt": "Shkruaj fjalën 'nxënës'", "answer": "nxënës", "category": models.CategoryEnum.VOCABULARY},
+            ]
+            
+            for i, ex_data in enumerate(sample_exercises):
+                exercise = models.Exercise(
+                    category=ex_data["category"],
+                    course_id=course.id,
+                    level_id=level.id,
+                    prompt=ex_data["prompt"],
+                    answer=ex_data["answer"],
+                    data=json.dumps({"type": "text_input"}),
+                    points=1,
+                    order_index=i + 1
+                )
+                db.add(exercise)
+            
+            fixed_count += 1
+        
+        db.commit()
+        
+        # Get updated totals
+        total_exercises = db.query(models.Exercise).count()
+        
+        return {
+            "message": f"Fixed {fixed_count} empty levels",
+            "levels_fixed": fixed_count,
+            "total_exercises_now": total_exercises
+        }
+        
+    except Exception as e:
+        db.rollback()
+        return {"error": str(e)}
+    finally:
+        db.close()
+
+
 @router.get("/seed-all-classes")
 def seed_all_classes_get():
     """Seed ALL classes (1-8) with exercises - GET version for easy browser access"""
