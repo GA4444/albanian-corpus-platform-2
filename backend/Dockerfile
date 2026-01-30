@@ -2,17 +2,15 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install system dependencies with retry logic
-RUN apt-get update --fix-missing && \
+# Install minimal system dependencies
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    tesseract-ocr \
-    libgl1-mesa-glx \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Try to install Albanian language pack (optional, continue if fails)
-RUN apt-get update && apt-get install -y tesseract-ocr-sqi || echo "Albanian language pack not available, continuing..."
+# Note: tesseract-ocr removed to simplify deployment
+# OCR functionality will be limited but core app will work
 
 # Copy requirements first for better caching
 COPY requirements.txt .
