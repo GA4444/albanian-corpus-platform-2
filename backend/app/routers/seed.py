@@ -23,10 +23,15 @@ router = APIRouter()
 def fix_empty_levels():
     """Add exercises to levels that have 0 exercises"""
     from ..database import SessionLocal
+    from sqlalchemy import text
     import json
     
     db = SessionLocal()
     try:
+        # First, fix the exercises sequence to avoid primary key conflicts
+        db.execute(text("SELECT setval('exercises_id_seq', (SELECT COALESCE(MAX(id), 0) + 1 FROM exercises), false)"))
+        db.commit()
+        
         # Find all levels with 0 exercises
         empty_levels = []
         all_levels = db.query(models.Level).all()
